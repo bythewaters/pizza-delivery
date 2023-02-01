@@ -55,3 +55,16 @@ class Ingredients(models.Model):
 
     def __str__(self):
         return f"{self.name}: {self.price}"
+
+
+class Pizza(models.Model):
+    name = models.CharField(max_length=63)
+    type_pizza = models.ForeignKey(PizzaType, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    ingredients = models.TextField()
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"{self.name}: {self.price}"

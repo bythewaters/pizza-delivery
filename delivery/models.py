@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 
+from delivery_pizza import settings
+
 
 class Customer(AbstractUser):
     address = models.CharField(max_length=255, blank=False, null=False)
@@ -35,3 +37,21 @@ class FeedBack(models.Model):
 
     class Meta:
         ordering = ["created_time"]
+
+
+class PizzaType(models.Model):
+    type = models.CharField(max_length=63)
+
+    def __str__(self):
+        return f"{self.type}"
+
+
+class Ingredients(models.Model):
+    name = models.CharField(max_length=63)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    class Meta:
+        ordering = ["price"]
+
+    def __str__(self):
+        return f"{self.name}: {self.price}"

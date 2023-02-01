@@ -68,3 +68,18 @@ class Pizza(models.Model):
 
     def __str__(self):
         return f"{self.name}: {self.price}"
+
+
+class Cart(models.Model):
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    pizza = models.ManyToManyField(Pizza, related_name="cart")
+    amount = models.DecimalField(max_digits=6, decimal_places=2)
+    topping = models.ManyToManyField(Ingredients, related_name="cart_topping")
+
+
+class Payment(models.Model):
+    customer_order = models.OneToOneField(Cart, on_delete=models.CASCADE)
+    order_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.order_time

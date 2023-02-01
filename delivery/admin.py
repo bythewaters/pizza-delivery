@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 
 from delivery.models import (
     Customer,
@@ -55,3 +56,6 @@ class PizzaAdmin(ModelAdmin):
 @admin.register(PizzaType)
 class PizzaTypeAdmin(ModelAdmin):
     list_display = ("type",)
+
+
+admin.site.unregister(Group)

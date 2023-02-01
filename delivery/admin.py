@@ -2,7 +2,13 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
 
-from delivery.models import Customer, FeedBack, Ingredients
+from delivery.models import (
+    Customer,
+    FeedBack,
+    Ingredients,
+    Pizza,
+    PizzaType
+)
 
 
 @admin.register(Customer)
@@ -38,3 +44,14 @@ class FeedBackAdmin(ModelAdmin):
 class IngredientsAdmin(ModelAdmin):
     list_display = ("name", "price")
     ordering = ("price",)
+
+
+@admin.register(Pizza)
+class PizzaAdmin(ModelAdmin):
+    list_display = ("name", "price", "ingredients")
+    ordering = ("price",)
+
+
+@admin.register(PizzaType)
+class PizzaTypeAdmin(ModelAdmin):
+    list_display = ("type",)

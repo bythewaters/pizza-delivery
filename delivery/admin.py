@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
 
-from delivery.models import Customer
+from delivery.models import Customer, FeedBack, Ingredients
 
 
 @admin.register(Customer)
@@ -25,3 +26,15 @@ class CustomerAdmin(UserAdmin):
             ),
         )
     )
+
+
+@admin.register(FeedBack)
+class FeedBackAdmin(ModelAdmin):
+    list_display = ("comment", "created_time", "customer")
+    ordering = ("created_time",)
+
+
+@admin.register(Ingredients)
+class IngredientsAdmin(ModelAdmin):
+    list_display = ("name", "price")
+    ordering = ("price",)

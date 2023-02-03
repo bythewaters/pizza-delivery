@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <section id="about" class="about">
+    <div class="container" data-aos="fade-up">
+      <div class="section-header">
+        <br>
+        <h2>About Us</h2>
+        <p><span>Together</span>, we create the best pizza ever (even better than the restaurant!)</p>
+      </div>
+
+      <div class="row gy-4">
+         <div class="col-lg-7 position-relative about-img" style="background-image: url({% static 'assets/img/about_page.jpeg' %})" data-aos="fade-up" data-aos-delay="150">
+         </div>
+        <div class="col-lg-5 d-flex align-items-end" data-aos="fade-up" data-aos-delay="300">
+          <div class="content ps-0 ps-lg-5">
+            <p class="fst-italic">
+             It’s all because we’re not afraid to get our hands dirty. We’re with you every step of the way, from shopping to the unboxing your Thepizzashop.ca products, to creating your culinary masterpieces and maintaining your precious equipment. Scout’s honor! ✌️
+  Our mission?
+            </p>
+            <ul>
+              <li><i class="bi bi-check2-all"></i> We’re not afraid to get our hands dirty… especially when it comes to making pizza!</li>
+              <li><i class="bi bi-check2-all"></i> We can’t promise you the best price,
+  but we can promise you the best service.</li>
+              <li><i class="bi bi-check2-all"></i> We offer the best of the best all under one roof you can rest easy.</li>
+              <li><i class="bi bi-check2-all"></i> We make a point of giving honest advice.</li>
+              <li><i class="bi bi-check2-all"></i> We save you looooong delays
+  and customs fees.</li>
+            </ul>
+            <p>
+              It’s all because we’re not afraid to get our hands dirty. We’re with you every step of the way, from shopping to the unboxing your Thepizzashop.ca products, to creating your culinary masterpieces and maintaining your precious equipment. Scout’s honor! ✌️
+  Our mission?
+            </p>
+
+            <div class="position-relative mt-4">
+              <img src="{% static 'assets/img/about_page2.jpg' %}" class="img-fluid" alt="">
+              <a href="https://www.youtube.com/watch?v=ADvf-PIZPLA" class="glightbox play-btn"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+{% endblock %}

@@ -1,9 +1,10 @@
 from django.urls import path
 
-from delivery.views import home
+from delivery.views import index, about
 
 urlpatterns = [
-    path("", home, name="home"),
+    path("", index, name="index"),
+    path("about/", about, name="about"),
 ]
 
 app_name = "delivery"

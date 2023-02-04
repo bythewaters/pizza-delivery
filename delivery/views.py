@@ -1,4 +1,7 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.views import generic
 
 from delivery.models import Pizza, Ingredients, FeedBack, PizzaType
 
@@ -19,8 +22,6 @@ def index(request):
     return render(request, "delivery/home.html", context=context)
 
 
-
-
 def about(request):
     counter_pizza = Pizza.objects.count()
     print(counter_pizza)
@@ -28,3 +29,9 @@ def about(request):
         "counter_pizza": counter_pizza
     }
     return render(request, "delivery/about_delivery.html", context)
+
+
+class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
+    model = Pizza
+    template_name = "delivery/pizza_menu.html"
+    context_object_name = "pizza_menu"

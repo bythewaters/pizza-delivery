@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import generic
 
-from delivery.models import Pizza, Ingredients, FeedBack, PizzaType
+from delivery.models import Pizza, Ingredients, FeedBack, PizzaType, Customer
 
 
 def index(request):
@@ -23,15 +23,16 @@ def index(request):
 
 
 def about(request):
-    counter_pizza = Pizza.objects.count()
-    print(counter_pizza)
-    context = {
-        "counter_pizza": counter_pizza
-    }
-    return render(request, "delivery/about_delivery.html", context)
+    return render(request, "delivery/about_delivery.html")
+
+
+class CustomerDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Customer
+    queryset = Customer.objects.all()
 
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     model = Pizza
+    pizza = Pizza.objects.select_related("type_pizza").distinct()
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"

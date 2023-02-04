@@ -24,7 +24,7 @@
         <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
         <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
       {% else %}
-        <a style="text-decoration: none" class="btn-book-a-table" href="{{ user.get_absolut }}">Welcome, {{ user.username }}</a>
+        <a style="text-decoration: none" class="btn-book-a-table" href="{{ user.get_absolute_url }}">Welcome, {{ user.username }}</a>
         <a style="text-decoration: none" class="btn-book-a-table" href="{% url 'logout' %}">Logout</a>
         <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
         <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>

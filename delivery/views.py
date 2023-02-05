@@ -49,14 +49,15 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     pizza = Pizza.objects.select_related("type_pizza").distinct()
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"
+    paginate_by = 6
 
 
-# class PizzaDetailView(LoginRequiredMixin, generic.DetailView):
-#     model = Pizza
-#
-#
-# class PizzaTypeListView(LoginRequiredMixin, generic.ListView):
-#     model = PizzaType
-#     type_pizza = PizzaType.objects.all()
-#     context_object_name = "type_pizza"
-#     template_name = "delivery/pizza_menu.html"
+class PizzaDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Pizza
+
+
+class PizzaTypeListView(LoginRequiredMixin, generic.ListView):
+    model = PizzaType
+    type_pizza = PizzaType.objects.all()
+    context_object_name = "type_pizza"
+    template_name = "delivery/pizza_menu.html"

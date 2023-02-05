@@ -1,6 +1,6 @@
 {% load query_transform %}
 {% if is_paginated %}
-  <ul class="pagination">
+  <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
       <li class="page-item">
         <a href="?{% query_transform request page=page_obj.previous_page_number %}" class="page-link">prev</a>
@@ -15,4 +15,5 @@
       </li>
     {% endif %}
   </ul>
+
 {% endif %}

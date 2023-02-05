@@ -14,7 +14,7 @@ from delivery.models import (
 
 @admin.register(Customer)
 class CustomerAdmin(UserAdmin):
-    list_display = UserAdmin.list_display + ("address", "phone_number")
+    list_display = UserAdmin.list_display + ("address", "phone_number",)
     fieldsets = UserAdmin.fieldsets + (
         (("Additional info", {"fields": ("address", "phone_number")}),)
     )
@@ -27,7 +27,8 @@ class CustomerAdmin(UserAdmin):
                         "first_name",
                         "last_name",
                         "address",
-                        "phone_number"
+                        "phone_number",
+                        "email"
                     )
                 },
             ),

@@ -1,37 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block topping %}
-  <!-- ======= Menu Section ======= -->
+{% block content %}
     <section id="topping" class="topping">
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2>Choose extra topping</h2>
-          <p>Check Our <span>Yummy Menu</span></p>
+          <p>Choose <span>Extra Topping</span></p>
         </div>
-        <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
-
-          <div class="tab-pane fade active show" id="menu-starters">
-
-            <div class="tab-header text-center">
-              <p>Menu</p>
-              <h3>Starters</h3>
-            </div>
-
-            <div class="row gy-5">
-
+          <div class="row gy-5">
+            {% for topping in ingredients_list %}
               <div class="col-lg-4 menu-item">
                 <a href="{% static 'assets/img/menu/menu-item-1.png' %}" class="glightbox"><img src="{% static 'assets/img/menu/menu-item-1.png' %}" class="menu-img img-fluid" alt=""></a>
-                <h4>Magnam Tiste</h4>
-                <p class="ingredients">
-                  Lorem, deren, trataro, filede, nerada
-                </p>
+                <h4>{{ topping.name }}</h4>
                 <p class="price">
-                  $5.95
+                  {{ topping.price }}$
                 </p>
-              </div><!-- Menu Item -->
+              </div>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-    </section><!-- End Menu Section -->
+    </section>
 {% endblock %}

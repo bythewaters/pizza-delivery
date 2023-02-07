@@ -69,3 +69,10 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
 
 class PizzaDetailView(LoginRequiredMixin, generic.DetailView):
     model = Pizza
+
+
+class IngredientsListView(LoginRequiredMixin, generic.ListView):
+    model = Ingredients
+    toppings = Ingredients.objects.all()
+    paginate_by = 6
+

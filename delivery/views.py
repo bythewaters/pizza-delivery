@@ -46,18 +46,26 @@ class CustomerUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     model = Pizza
-    pizza = Pizza.objects.select_related("type_pizza").distinct()
+    pizza = Pizza.objects.all()
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"
-    paginate_by = 6
+    paginate_by = 3
+
+    def get_context_data(self, **kwargs):
+        context = super(PizzaMenuListView, self).get_context_data(**kwargs)
+        context["pizza_type"] = PizzaType.objects.all()
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        try:
+            search_term = self.kwargs["type_id"]
+        except KeyError:
+            return queryset
+        if search_term is not None:
+            queryset = queryset.filter(type_pizza=search_term)
+        return queryset
 
 
 class PizzaDetailView(LoginRequiredMixin, generic.DetailView):
     model = Pizza
-
-
-class PizzaTypeListView(LoginRequiredMixin, generic.ListView):
-    model = PizzaType
-    type_pizza = PizzaType.objects.all()
-    context_object_name = "type_pizza"
-    template_name = "delivery/pizza_menu.html"

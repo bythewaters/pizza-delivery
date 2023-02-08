@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from delivery.views import (
     index,
@@ -8,7 +8,7 @@ from delivery.views import (
     CustomerDetailView,
     CustomerUpdateView,
     IngredientsListView,
-    CustomerCreateView
+    RegisterView
 )
 
 urlpatterns = [
@@ -19,7 +19,7 @@ urlpatterns = [
     path("menu/pizza/<int:pk>/", PizzaDetailView.as_view(), name="pizza-detail"),
     path("customer/<int:pk>/", CustomerDetailView.as_view(), name="customer-detail"),
     path("customer/<int:pk>/update/", CustomerUpdateView.as_view(), name="customer-update"),
-    path("registration/", CustomerCreateView.as_view(), name="customer-create"),
+    path("registration/", RegisterView.as_view(), name="customer-register"),
     path("ingredients/", IngredientsListView.as_view(), name="ingredients-list"),
 ]
 

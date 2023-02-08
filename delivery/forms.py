@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from delivery.models import Customer
 
@@ -10,7 +11,7 @@ class CustomerInfoUpdateForm(forms.ModelForm):
         fields = ["phone_number", "email", "address"]
 
 
-class CustomerCreateForm(UserCreationForm):
+class RegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Customer
         fields = UserCreationForm.Meta.fields + (

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from delivery.forms import CustomerInfoUpdateForm, CustomerCreateForm
+from delivery.forms import CustomerInfoUpdateForm, RegisterForm
 from delivery.models import Pizza, Ingredients, FeedBack, PizzaType, Customer
 
 
@@ -46,10 +46,10 @@ class CustomerUpdateView(LoginRequiredMixin, generic.UpdateView):
         return redirect('delivery:customer-detail', self.object.pk)
 
 
-class CustomerCreateView(generic.CreateView):
+class RegisterView(generic.CreateView):
     model = Customer
-    form_class = CustomerCreateForm
-    template_name = "delivery/customer_create_form.html"
+    form_class = RegisterForm
+    template_name = "delivery/customer_register_form.html"
 
     def form_valid(self, form):
         form.save()

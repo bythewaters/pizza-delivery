@@ -21,3 +21,12 @@ class RegisterForm(UserCreationForm):
             "first_name",
             "last_name"
         )
+
+
+class IngredientSearchForm(forms.Form):
+    ingredients = forms.CharField(
+        max_length=63,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search for name..."})
+    )

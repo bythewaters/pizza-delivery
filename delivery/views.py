@@ -1,13 +1,23 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.views import generic
 
-from delivery.forms import CustomerInfoUpdateForm, RegisterForm
-from delivery.models import Pizza, Ingredients, FeedBack, PizzaType, Customer
+from delivery.forms import (
+    CustomerInfoUpdateForm,
+    RegisterForm,
+    IngredientSearchForm
+)
+from delivery.models import (
+    Pizza,
+
+    Ingredients,
+    FeedBack,
+    PizzaType,
+    Customer
+)
 
 
 def index(request):
@@ -66,7 +76,6 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     pizza = Pizza.objects.all()
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"
-    paginate_by = 3
 
     def get_context_data(self, **kwargs):
         context = super(PizzaMenuListView, self).get_context_data(**kwargs)
@@ -90,6 +99,23 @@ class PizzaDetailView(LoginRequiredMixin, generic.DetailView):
 
 class IngredientsListView(LoginRequiredMixin, generic.ListView):
     model = Ingredients
-    toppings = Ingredients.objects.all()
+    form_class = IngredientSearchForm
+    queryset = Ingredients.objects.all()
     paginate_by = 6
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(IngredientsListView, self).get_context_data(**kwargs)
+        ingredients = self.request.GET.get("ingredients", "")
+        context["ingredients_form"] = IngredientSearchForm(
+            initial={"ingredients": ingredients}
+        )
+        return context
+
+    def get_queryset(self):
+        form = IngredientSearchForm(self.request.GET)
+
+        if form.is_valid():
+            return self.queryset.filter(
+                name__icontains=form.cleaned_data["ingredients"]
+            )
+        return self.queryset

@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
+{% load crispy_forms_filters %}
 
 {% block content %}
     <section id="topping" class="topping">
       <div class="container" data-aos="fade-up">
-
         <div class="section-header">
           <p>Choose <span>Extra Topping</span></p>
         </div>
+        <form action="" method="get" class="form-inline">
+          {{ ingredients_form|crispy }}
+          <input type="submit" value="Search" class="btn btn-info" >
+        </form>
+        <br>
           <div class="row gy-5">
             {% for topping in ingredients_list %}
               <div class="col-lg-4 menu-item">

@@ -1,5 +1,7 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
@@ -48,6 +50,15 @@ class CustomerCreateView(generic.CreateView):
     model = Customer
     form_class = CustomerCreateForm
     template_name = "delivery/customer_create_form.html"
+
+    def form_valid(self, form):
+        form.save()
+        user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password1"]
+        )
+        login(self.request, user)
+        return HttpResponseRedirect(reverse("delivery:index"))
 
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):

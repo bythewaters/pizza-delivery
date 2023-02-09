@@ -6,9 +6,17 @@
     <section id="menu" class="menu">
       <div class="container" data-aos="fade-up">
 
-        <div class="section-header">
-          <p>Check Our <span>Pizza Menu</span></p>
+        <div class="section-header" style="">
+          <p>
+            Check Our <span>Pizza Menu</span>
+          </p>
+          <p>
+            <a style="text-decoration: none; margin-left: 1100px" href="{% url 'delivery:pizza-create' %}">
+              Add new Pizza
+            </a>
+          </p>
         </div>
+
             <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
               {% for type in pizza_type %}
                 <li class="nav-item">
@@ -29,7 +37,12 @@
             {% for pizza in pizza_menu %}
               <div class="col-lg-4 menu-item">
                 <a href="{% static 'assets/img/menu/menu-item-1.png' %}" class="glightbox"><img src="{% static 'assets/img/menu/menu-item-1.png' %}" class="menu-img img-fluid" alt=""></a>
-                <h4 style="text-align: center">{{ pizza.name }}</h4>
+                <h4 style="text-align: center">{{ pizza.name }}
+                  <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
+                  <a style="text-decoration: none" href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
+                    ❌
+                  </a>
+                </h4>
                 <p style="text-align: center" class="ingredients">
                   {{ pizza.ingredients }}
                 </p>

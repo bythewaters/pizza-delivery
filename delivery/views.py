@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 
 from delivery.forms import (
@@ -12,7 +12,6 @@ from delivery.forms import (
 )
 from delivery.models import (
     Pizza,
-
     Ingredients,
     FeedBack,
     PizzaType,
@@ -93,8 +92,24 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
-class PizzaDetailView(LoginRequiredMixin, generic.DetailView):
+class PizzaCreateView(LoginRequiredMixin, generic.CreateView):
     model = Pizza
+    fields = "__all__"
+    success_url = reverse_lazy("delivery:pizza-menu-list")
+    template_name = "delivery/pizza_update_create_form.html"
+
+
+class PizzaUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Pizza
+    fields = "__all__"
+    success_url = reverse_lazy("delivery:pizza-menu-list")
+    template_name = "delivery/pizza_update_create_form.html"
+
+
+class PizzaDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Pizza
+    success_url = reverse_lazy("delivery:pizza-menu-list")
+    template_name = "delivery/pizza_delete_form.html"
 
 
 class IngredientsListView(LoginRequiredMixin, generic.ListView):
@@ -119,3 +134,24 @@ class IngredientsListView(LoginRequiredMixin, generic.ListView):
                 name__icontains=form.cleaned_data["ingredients"]
             )
         return self.queryset
+
+
+class IngredientsUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Ingredients
+    fields = "__all__"
+    success_url = reverse_lazy("delivery:ingredients-list")
+    template_name = "delivery/ingredients_update_create_form.html"
+
+
+class IngredientsCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Ingredients
+    fields = "__all__"
+    success_url = reverse_lazy("delivery:ingredients-list")
+    template_name = "delivery/ingredients_update_create_form.html"
+
+
+class IngredientsDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Ingredients
+    fields = "__all__"
+    success_url = reverse_lazy("delivery:ingredients-list")
+    template_name = "delivery/ingredients_delete_form.html"

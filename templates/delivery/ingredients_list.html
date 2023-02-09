@@ -8,10 +8,11 @@
         <div class="section-header">
           <p>Choose <span>Extra Topping</span></p>
         </div>
-        <form action="" method="get" class="form-inline">
+        <form style="justify-content: right;" action="" method="get" class="form-inline">
           {{ ingredients_form|crispy }}
-          <input type="submit" value="Search" class="btn btn-info" >
+          <input type="submit" value="Search" class="btn btn-outline-primary" >
         </form>
+
         <br>
           <div class="row gy-5">
             {% for topping in ingredients_list %}

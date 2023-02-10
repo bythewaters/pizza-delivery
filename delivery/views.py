@@ -15,7 +15,7 @@ from delivery.models import (
     Ingredients,
     FeedBack,
     PizzaType,
-    Customer
+    Customer, Cart
 )
 
 
@@ -155,3 +155,9 @@ class IngredientsDeleteView(LoginRequiredMixin, generic.DeleteView):
     fields = "__all__"
     success_url = reverse_lazy("delivery:ingredients-list")
     template_name = "delivery/ingredients_delete_form.html"
+
+
+class CartListView(LoginRequiredMixin, generic.ListView):
+    model = Cart
+    cart = Cart.objects.all()
+    template_name = "delivery/cart_list.html"

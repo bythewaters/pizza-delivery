@@ -13,7 +13,8 @@ from delivery.views import (
     RegisterView,
     PizzaUpdateView,
     PizzaCreateView,
-    PizzaDeleteView
+    PizzaDeleteView,
+    CartListView
 )
 
 urlpatterns = [
@@ -31,6 +32,7 @@ urlpatterns = [
     path("ingredients/create/", IngredientsCreateView.as_view(), name="ingredients-create"),
     path("ingredients/<int:pk>/delete/", IngredientsDeleteView.as_view(), name="ingredients-delete"),
     path("ingredients/", IngredientsListView.as_view(), name="ingredients-list"),
+    path("cart/<int:pk>/", CartListView.as_view(), name="cart-list"),
 ]
 
 app_name = "delivery"

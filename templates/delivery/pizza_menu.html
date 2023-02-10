@@ -11,9 +11,11 @@
             Check Our <span>Pizza Menu</span>
           </p>
           <p>
-            <a style="text-decoration: none; margin-left: 1100px" href="{% url 'delivery:pizza-create' %}">
-              Add new Pizza
-            </a>
+            {% if perms.delivery.add_pizza %}
+              <a style="text-decoration: none; margin-left: 1100px" href="{% url 'delivery:pizza-create' %}">
+                Add new Pizza
+              </a>
+            {% endif %}
           </p>
         </div>
 
@@ -38,10 +40,14 @@
               <div class="col-lg-4 menu-item">
                 <a href="{% static 'assets/img/menu/menu-item-1.png' %}" class="glightbox"><img src="{% static 'assets/img/menu/menu-item-1.png' %}" class="menu-img img-fluid" alt=""></a>
                 <h4 style="text-align: center">{{ pizza.name }}
-                  <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
-                  <a style="text-decoration: none" href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
-                    ❌
-                  </a>
+                  {% if perms.delivery.change_pizza %}
+                    <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
+                  {% endif %}
+                  {% if perms.delivery.delete_pizza%}
+                    <a style="text-decoration: none" href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
+                      ❌
+                    </a>
+                  {% endif %}
                 </h4>
                 <p style="text-align: center" class="ingredients">
                   {{ pizza.ingredients }}

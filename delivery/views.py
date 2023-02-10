@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -71,6 +71,7 @@ class RegisterView(generic.CreateView):
 
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
+    # permission_required = ("delivery.add_pizza", "delivery.change_pizza", "delivery.delete_pizza")
     model = Pizza
     pizza = Pizza.objects.all()
     template_name = "delivery/pizza_menu.html"
@@ -92,21 +93,24 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
-class PizzaCreateView(LoginRequiredMixin, generic.CreateView):
+class PizzaCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+    permission_required = "delivery.add_pizza"
     model = Pizza
     fields = "__all__"
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_update_create_form.html"
 
 
-class PizzaUpdateView(LoginRequiredMixin, generic.UpdateView):
+class PizzaUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "delivery.change_pizza"
     model = Pizza
     fields = "__all__"
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_update_create_form.html"
 
 
-class PizzaDeleteView(LoginRequiredMixin, generic.DeleteView):
+class PizzaDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+    permission_required = "delivery.delete_pizza"
     model = Pizza
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_delete_form.html"
@@ -136,21 +140,24 @@ class IngredientsListView(LoginRequiredMixin, generic.ListView):
         return self.queryset
 
 
-class IngredientsUpdateView(LoginRequiredMixin, generic.UpdateView):
+class IngredientsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "delivery.change_ingredients"
     model = Ingredients
     fields = "__all__"
     success_url = reverse_lazy("delivery:ingredients-list")
     template_name = "delivery/ingredients_update_create_form.html"
 
 
-class IngredientsCreateView(LoginRequiredMixin, generic.CreateView):
+class IngredientsCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+    permission_required = "delivery.add_ingredients"
     model = Ingredients
     fields = "__all__"
     success_url = reverse_lazy("delivery:ingredients-list")
     template_name = "delivery/ingredients_update_create_form.html"
 
 
-class IngredientsDeleteView(LoginRequiredMixin, generic.DeleteView):
+class IngredientsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+    permission_required = "delivery.delete_ingredients"
     model = Ingredients
     fields = "__all__"
     success_url = reverse_lazy("delivery:ingredients-list")

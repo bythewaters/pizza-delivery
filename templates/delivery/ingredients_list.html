@@ -8,9 +8,11 @@
         <div class="section-header">
           <p>Choose <span>Extra Topping</span></p>
           <p>
-            <a style="text-decoration: none; margin-left: 1000px" href="{% url 'delivery:pizza-create' %}">
-              Add new topping
-            </a>
+            {% if perms.delivery.add_ingredients %}
+              <a style="text-decoration: none; margin-left: 1000px" href="{% url 'delivery:pizza-create' %}">
+                Add new topping
+              </a>
+            {% endif %}
           </p>
         </div>
         <form style="justify-content: right;" action="" method="get" class="form-inline">
@@ -25,10 +27,14 @@
                 <a href="{% static 'assets/img/menu/menu-item-1.png' %}" class="glightbox"><img src="{% static 'assets/img/menu/menu-item-1.png' %}" class="menu-img img-fluid" alt=""></a>
                 <h4>
                   {{ topping.name }}
+                  {% if perms.delivery.change_ingredients %}
                   <a style="text-decoration: none" href="{% url 'delivery:ingredients-update' pk=topping.id %}">🔄</a>
+                  {% endif %}
+                  {% if perms.delivery.add_ingredients %}
                   <a style="text-decoration: none" href="{% url 'delivery:ingredients-delete' pk=topping.id %}">
                     ❌
                   </a>
+                  {% endif %}
                 </h4>
                 <p class="price">
                   {{ topping.price }}$

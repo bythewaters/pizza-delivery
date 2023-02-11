@@ -24,7 +24,7 @@
           <div class="row gy-5">
             {% for topping in ingredients_list %}
               <div class="col-lg-4 menu-item" style="text-align: center">
-                <a href="{% static 'assets/img/menu/menu-item-1.png' %}" class="glightbox"><img src="{% static 'assets/img/menu/menu-item-1.png' %}" class="menu-img img-fluid" alt=""></a>
+                <img src="{% static 'assets/img/ingredients/'|add:topping.name|add:'.jpeg' %}" class="menu-img img-fluid" alt="">
                 <h4>
                   {{ topping.name }}
                   {% if perms.delivery.change_ingredients %}

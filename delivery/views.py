@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 
+
 from delivery.forms import (
     CustomerInfoUpdateForm,
     RegisterForm,
@@ -71,7 +72,6 @@ class RegisterView(generic.CreateView):
 
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
-    # permission_required = ("delivery.add_pizza", "delivery.change_pizza", "delivery.delete_pizza")
     model = Pizza
     pizza = Pizza.objects.all()
     template_name = "delivery/pizza_menu.html"
@@ -112,6 +112,7 @@ class PizzaUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Updat
 class PizzaDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     permission_required = "delivery.delete_pizza"
     model = Pizza
+    queryset = Pizza.objects.prefetch_related("cart__pizza")
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_delete_form.html"
 

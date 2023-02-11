@@ -109,29 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /**
-   * Scroll top button
-   */
-  const scrollTop = document.querySelector('.scroll-top');
-  if (scrollTop) {
-    const togglescrollTop = function() {
-      window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
-    }
-    window.addEventListener('load', togglescrollTop);
-    document.addEventListener('scroll', togglescrollTop);
-    scrollTop.addEventListener('click', window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    }));
-  }
-
-  /**
-   * Initiate glightbox
-   */
-  const glightbox = GLightbox({
-    selector: '.glightbox'
-  });
-
-  /**
    * Initiate pURE cOUNTER
    */
   new PureCounter();
@@ -186,39 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       1200: {
         slidesPerView: 3,
-      }
-    }
-  });
-
-  /**
-   * Gallery Slider
-   */
-  new Swiper('.gallery-slider', {
-    speed: 400,
-    loop: true,
-    centeredSlides: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    slidesPerView: 'auto',
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    },
-    breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20
-      },
-      640: {
-        slidesPerView: 3,
-        spaceBetween: 20
-      },
-      992: {
-        slidesPerView: 5,
-        spaceBetween: 20
       }
     }
   });

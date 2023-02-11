@@ -16,7 +16,8 @@ from delivery.models import (
     Topping,
     FeedBack,
     PizzaType,
-    Customer, Cart
+    Customer,
+    Order
 )
 
 
@@ -165,7 +166,7 @@ class ToppingDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.Del
     template_name = "delivery/topping_delete_form.html"
 
 
-class CartListView(LoginRequiredMixin, generic.ListView):
-    model = Cart
-    cart = Cart.objects.all()
-    template_name = "delivery/cart_list.html"
+class OrderListView(LoginRequiredMixin, generic.ListView):
+    model = Order
+    cart = Order.objects.all()
+    template_name = "delivery/order_list.html"

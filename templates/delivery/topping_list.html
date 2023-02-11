@@ -8,30 +8,30 @@
         <div class="section-header">
           <p>Choose <span>Extra Topping</span></p>
           <p>
-            {% if perms.delivery.add_ingredients %}
-              <a style="text-decoration: none; margin-left: 1000px" href="{% url 'delivery:pizza-create' %}">
+            {% if perms.delivery.add_topping %}
+              <a style="text-decoration: none; margin-left: 1000px" href="{% url 'delivery:topping-create' %}">
                 Add new topping
               </a>
             {% endif %}
           </p>
         </div>
         <form style="justify-content: right;" action="" method="get" class="form-inline">
-          {{ ingredients_form|crispy }}
+          {{ topping_form|crispy }}
           <input type="submit" value="Search" class="btn btn-outline-primary" >
         </form>
 
         <br>
           <div class="row gy-5">
-            {% for topping in ingredients_list %}
+            {% for topping in topping_list %}
               <div class="col-lg-4 menu-item" style="text-align: center">
-                <img src="{% static 'assets/img/ingredients/'|add:topping.name|add:'.jpeg' %}" class="menu-img img-fluid" alt="">
+                <img src="{% static 'assets/img/topping/'|add:topping.name|add:'.jpeg' %}" class="menu-img img-fluid" alt="">
                 <h4>
                   {{ topping.name }}
-                  {% if perms.delivery.change_ingredients %}
-                  <a style="text-decoration: none" href="{% url 'delivery:ingredients-update' pk=topping.id %}">🔄</a>
+                  {% if perms.delivery.change_topping %}
+                  <a style="text-decoration: none" href="{% url 'delivery:topping-update' pk=topping.id %}">🔄</a>
                   {% endif %}
-                  {% if perms.delivery.add_ingredients %}
-                  <a style="text-decoration: none" href="{% url 'delivery:ingredients-delete' pk=topping.id %}">
+                  {% if perms.delivery.add_topping %}
+                  <a style="text-decoration: none" href="{% url 'delivery:topping-delete' pk=topping.id %}">
                     ❌
                   </a>
                   {% endif %}

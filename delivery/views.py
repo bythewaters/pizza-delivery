@@ -9,11 +9,11 @@ from django.views import generic
 from delivery.forms import (
     CustomerInfoUpdateForm,
     RegisterForm,
-    IngredientSearchForm
+    ToppingSearchForm
 )
 from delivery.models import (
     Pizza,
-    Ingredients,
+    Topping,
     FeedBack,
     PizzaType,
     Customer, Cart
@@ -22,7 +22,7 @@ from delivery.models import (
 
 def index(request):
     pizza_count = Pizza.objects.count()
-    topping_count = Ingredients.objects.count()
+    topping_count = Topping.objects.count()
     feedback_count = FeedBack.objects.count()
     pizza_type_count = PizzaType.objects.count()
 
@@ -117,52 +117,52 @@ class PizzaDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.Delet
     template_name = "delivery/pizza_delete_form.html"
 
 
-class IngredientsListView(LoginRequiredMixin, generic.ListView):
-    model = Ingredients
-    form_class = IngredientSearchForm
-    queryset = Ingredients.objects.all()
+class ToppingListView(LoginRequiredMixin, generic.ListView):
+    model = Topping
+    form_class = ToppingSearchForm
+    queryset = Topping.objects.all()
     paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(IngredientsListView, self).get_context_data(**kwargs)
-        ingredients = self.request.GET.get("ingredients", "")
-        context["ingredients_form"] = IngredientSearchForm(
-            initial={"ingredients": ingredients}
+        context = super(ToppingListView, self).get_context_data(**kwargs)
+        topping = self.request.GET.get("topping", "")
+        context["topping_form"] = ToppingSearchForm(
+            initial={"topping": topping}
         )
         return context
 
     def get_queryset(self):
-        form = IngredientSearchForm(self.request.GET)
+        form = ToppingSearchForm(self.request.GET)
 
         if form.is_valid():
             return self.queryset.filter(
-                name__icontains=form.cleaned_data["ingredients"]
+                name__icontains=form.cleaned_data["topping"]
             )
         return self.queryset
 
 
-class IngredientsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
-    permission_required = "delivery.change_ingredients"
-    model = Ingredients
+class ToppingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "delivery.change_topping"
+    model = Topping
     fields = "__all__"
-    success_url = reverse_lazy("delivery:ingredients-list")
-    template_name = "delivery/ingredients_update_create_form.html"
+    success_url = reverse_lazy("delivery:topping-list")
+    template_name = "delivery/topping_update_create_form.html"
 
 
-class IngredientsCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
-    permission_required = "delivery.add_ingredients"
-    model = Ingredients
+class ToppingCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+    permission_required = "delivery.add_topping"
+    model = Topping
     fields = "__all__"
-    success_url = reverse_lazy("delivery:ingredients-list")
-    template_name = "delivery/ingredients_update_create_form.html"
+    success_url = reverse_lazy("delivery:topping-list")
+    template_name = "delivery/topping_update_create_form.html"
 
 
-class IngredientsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
-    permission_required = "delivery.delete_ingredients"
-    model = Ingredients
+class ToppingDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+    permission_required = "delivery.delete_topping"
+    model = Topping
     fields = "__all__"
-    success_url = reverse_lazy("delivery:ingredients-list")
-    template_name = "delivery/ingredients_delete_form.html"
+    success_url = reverse_lazy("delivery:topping-list")
+    template_name = "delivery/topping_delete_form.html"
 
 
 class CartListView(LoginRequiredMixin, generic.ListView):

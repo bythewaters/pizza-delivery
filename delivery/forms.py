@@ -21,8 +21,8 @@ class RegisterForm(UserCreationForm):
         )
 
 
-class IngredientSearchForm(forms.Form):
-    ingredients = forms.CharField(
+class ToppingSearchForm(forms.Form):
+    topping = forms.CharField(
         max_length=63,
         required=False,
         label="",

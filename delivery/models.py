@@ -46,7 +46,7 @@ class PizzaType(models.Model):
         return f"{self.type}"
 
 
-class Ingredients(models.Model):
+class Topping(models.Model):
     name = models.CharField(max_length=63)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
@@ -74,7 +74,7 @@ class Cart(models.Model):
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
     pizza = models.ManyToManyField(Pizza, related_name="cart")
     amount = models.DecimalField(max_digits=6, decimal_places=2)
-    topping = models.ManyToManyField(Ingredients, related_name="cart_topping")
+    topping = models.ManyToManyField(Topping, related_name="cart_topping")
 
 
 class Payment(models.Model):

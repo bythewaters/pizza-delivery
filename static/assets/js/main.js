@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+
   /**
    * Init swiper slider with 3 slides at once in desktop view
    */

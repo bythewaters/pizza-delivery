@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from delivery.models import (
     Customer,
     FeedBack,
-    Ingredients,
+    Topping,
     Pizza,
     PizzaType
 )
@@ -42,8 +42,8 @@ class FeedBackAdmin(ModelAdmin):
     ordering = ("created_time",)
 
 
-@admin.register(Ingredients)
-class IngredientsAdmin(ModelAdmin):
+@admin.register(Topping)
+class ToppingAdmin(ModelAdmin):
     list_display = ("name", "price")
     ordering = ("price",)
 

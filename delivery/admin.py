@@ -8,7 +8,8 @@ from delivery.models import (
     FeedBack,
     Topping,
     Pizza,
-    PizzaType
+    PizzaType,
+    Order
 )
 
 
@@ -57,6 +58,11 @@ class PizzaAdmin(ModelAdmin):
 @admin.register(PizzaType)
 class PizzaTypeAdmin(ModelAdmin):
     list_display = ("type",)
+
+
+@admin.register(Order)
+class OrderAdmin(ModelAdmin):
+    list_display = ("customer", "quantity", "status")
 
 
 admin.site.unregister(Group)

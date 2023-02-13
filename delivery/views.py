@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -17,7 +18,7 @@ from delivery.models import (
     FeedBack,
     PizzaType,
     Customer,
-    Order
+    Order,
 )
 
 
@@ -74,7 +75,7 @@ class RegisterView(generic.CreateView):
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     model = Pizza
-    pizza = Pizza.objects.all()
+    pizza = Pizza.objects.select_related("type_pizza_id")
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"
 
@@ -113,7 +114,7 @@ class PizzaUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Updat
 class PizzaDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     permission_required = "delivery.delete_pizza"
     model = Pizza
-    queryset = Pizza.objects.prefetch_related("cart__pizza")
+    queryset = Pizza.objects.prefetch_related("order__pizza")
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_delete_form.html"
 
@@ -166,7 +167,11 @@ class ToppingDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.Del
     template_name = "delivery/topping_delete_form.html"
 
 
-class OrderListView(LoginRequiredMixin, generic.ListView):
-    model = Order
-    cart = Order.objects.all()
-    template_name = "delivery/order_list.html"
+def order(request):
+    # try:
+    #     current_username = request.user.username
+    #     user = User.objects.filter(username=current_username)
+    #     orders = Order
+    # except:
+    #     pass
+    return render(request, "delivery/order_list.html")

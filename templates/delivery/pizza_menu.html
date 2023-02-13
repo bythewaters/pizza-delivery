@@ -49,15 +49,7 @@ png = ".png"
                       ❌
                     </a>
                   {% endif %}
-                  <form method="post" action="{% url 'delivery:order-add-list' pizza.id %}">
-                      {% csrf_token %}
-                      <div class="input-group">
-                          <span class="input-group-btn">
-                              <button class="btn btn-success" type="submit">Add</button>
-                          </span>
-                      </div>
-                  </form>
-
+{#                  <a style="text-decoration: none" href="{% url 'delivery:order-add-pizza' pk=pizza.id %}">➕</a>#}
                 </h4>
                 <p style="text-align: center" class="ingredients">
                   {% for ingredients in pizza.topping.all %}

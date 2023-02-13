@@ -14,7 +14,7 @@ from delivery.views import (
     PizzaUpdateView,
     PizzaCreateView,
     PizzaDeleteView,
-    OrderListView
+    order,
 )
 
 urlpatterns = [
@@ -32,7 +32,7 @@ urlpatterns = [
     path("topping/create/", ToppingCreateView.as_view(), name="topping-create"),
     path("topping/<int:pk>/delete/", ToppingDeleteView.as_view(), name="topping-delete"),
     path("topping/", ToppingListView.as_view(), name="topping-list"),
-    path("cart/", OrderListView.as_view(), name="order-list"),
+    path("order/", order, name="order-list"),
 ]
 
 app_name = "delivery"

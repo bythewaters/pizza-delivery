@@ -61,7 +61,7 @@ class Pizza(models.Model):
     name = models.CharField(max_length=63)
     type_pizza = models.ForeignKey(PizzaType, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    ingredients = models.TextField()
+    ingredients = models.TextField(blank=True, null=True)
     topping = models.ManyToManyField(Topping, related_name="pizza_topping")
 
     class Meta:
@@ -73,18 +73,16 @@ class Pizza(models.Model):
 
 class Order(models.Model):
     pizza = models.ManyToManyField(Pizza, related_name="order")
-    amount = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    topping = models.ManyToManyField(Topping, related_name="cart_topping")
-    status = models.CharField(max_length=63)
+    status = models.BooleanField(default=False)
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
 
-
-class Bucket(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.pizza.name}"
 
 
 class Payment(models.Model):
-    customer_order = models.ForeignKey(Bucket, on_delete=models.CASCADE)
+    customer_order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

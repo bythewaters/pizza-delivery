@@ -16,7 +16,7 @@ from delivery.views import (
     PizzaDeleteView,
     OrderDetailView,
     AddToNewOrderView,
-    OrderDeleteView
+    OrderDeleteView, IncrementQuantityView, DecrementQuantityView
 )
 
 urlpatterns = [
@@ -37,6 +37,8 @@ urlpatterns = [
     path("order/", OrderDetailView.as_view(), name="order-list"),
     path("order/add-pizza/<int:pizza_id>/", AddToNewOrderView.as_view(), name="order-add-pizza"),
     path("order-delete/<int:pk>/", OrderDeleteView.as_view(), name="order-delete"),
+    path("increment/<int:pk>/", IncrementQuantityView.as_view(), name="order-increment"),
+    path("decrement/<int:pk>/", DecrementQuantityView.as_view(), name="order-decrement"),
 ]
 
 app_name = "delivery"

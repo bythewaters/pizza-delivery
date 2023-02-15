@@ -214,3 +214,22 @@ class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     queryset = Order.objects.all()
     success_url = reverse_lazy("delivery:order-list")
     template_name = "delivery/order_list.html"
+
+
+class IncrementQuantityView(View):
+    def post(self, request, pk):
+        order = Order.objects.get(id=pk)
+        order.quantity += 1
+        order.save()
+        return redirect('delivery:order-list')
+
+
+class DecrementQuantityView(View):
+    def post(self, request, pk):
+        order = Order.objects.get(id=pk)
+        if order.quantity > 1:
+            order.quantity -= 1
+            order.save()
+        else:
+            order.delete()
+        return redirect('delivery:order-list')

@@ -1,17 +1,12 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views import generic
+from django.views import generic, View
 
-
-from delivery.forms import (
-    CustomerInfoUpdateForm,
-    RegisterForm,
-    ToppingSearchForm
-)
+from delivery.forms import CustomerInfoUpdateForm, RegisterForm, ToppingSearchForm
 from delivery.models import (
     Pizza,
     Topping,
@@ -32,7 +27,7 @@ def index(request):
         "pizza_count": pizza_count,
         "topping_count": topping_count,
         "feedback_count": feedback_count,
-        "pizza_type_count": pizza_type_count
+        "pizza_type_count": pizza_type_count,
     }
 
     return render(request, "delivery/home.html", context=context)
@@ -55,7 +50,7 @@ class CustomerUpdateView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.save()
-        return redirect('delivery:customer-detail', self.object.pk)
+        return redirect("delivery:customer-detail", self.object.pk)
 
 
 class RegisterView(generic.CreateView):
@@ -67,7 +62,7 @@ class RegisterView(generic.CreateView):
         form.save()
         user = authenticate(
             username=form.cleaned_data["username"],
-            password=form.cleaned_data["password1"]
+            password=form.cleaned_data["password1"],
         )
         login(self.request, user)
         return HttpResponseRedirect(reverse("delivery:index"))
@@ -128,22 +123,20 @@ class ToppingListView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ToppingListView, self).get_context_data(**kwargs)
         topping = self.request.GET.get("topping", "")
-        context["topping_form"] = ToppingSearchForm(
-            initial={"topping": topping}
-        )
+        context["topping_form"] = ToppingSearchForm(initial={"topping": topping})
         return context
 
     def get_queryset(self):
         form = ToppingSearchForm(self.request.GET)
 
         if form.is_valid():
-            return self.queryset.filter(
-                name__icontains=form.cleaned_data["topping"]
-            )
+            return self.queryset.filter(name__icontains=form.cleaned_data["topping"])
         return self.queryset
 
 
-class ToppingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+class ToppingUpdateView(
+    LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView
+):
     permission_required = "delivery.change_topping"
     model = Topping
     fields = "__all__"
@@ -151,7 +144,9 @@ class ToppingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Upd
     template_name = "delivery/topping_update_create_form.html"
 
 
-class ToppingCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+class ToppingCreateView(
+    LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView
+):
     permission_required = "delivery.add_topping"
     model = Topping
     fields = "__all__"
@@ -159,7 +154,9 @@ class ToppingCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Cre
     template_name = "delivery/topping_update_create_form.html"
 
 
-class ToppingDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+class ToppingDeleteView(
+    LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView
+):
     permission_required = "delivery.delete_topping"
     model = Topping
     fields = "__all__"
@@ -167,11 +164,53 @@ class ToppingDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.Del
     template_name = "delivery/topping_delete_form.html"
 
 
-def order(request):
-    # try:
-    #     current_username = request.user.username
-    #     user = User.objects.filter(username=current_username)
-    #     orders = Order
-    # except:
-    #     pass
-    return render(request, "delivery/order_list.html")
+class OrderDetailView(LoginRequiredMixin, generic.ListView):
+    model = Order
+    template_name = "delivery/order_list.html"
+    context_object_name = "orders"
+
+    def get_queryset(self):
+        return Order.objects.filter(customer=self.request.user).order_by("-id")
+
+
+@login_required
+def order_list(request):
+    customer = request.user
+    orders = Order.objects.filter(customer=customer)
+    pizzas = Pizza.objects.all()
+
+    if request.method == "POST":
+        pizza_id = request.POST.get("pizza_id")
+        pizza = Pizza.objects.get(id=pizza_id)
+        quantity = request.POST.get("quantity")
+        order, created = Order.objects.get_or_create(customer=customer, status=False)
+        order_pizza, created = order.pizza.get_or_create(
+            pizza=pizza, defaults={"quantity": quantity}
+        )
+        if not created:
+            order_pizza.quantity += int(quantity)
+            order_pizza.save()
+
+        return redirect("order-list")
+
+    context = {
+        "orders": orders,
+        "pizzas": pizzas,
+    }
+    return render(request, "delivery/order_list.html", context)
+
+
+class AddToNewOrderView(View):
+    def post(self, request, pizza_id):
+        pizza = Pizza.objects.get(id=pizza_id)
+        customer = request.user
+        order = Order.objects.create(customer=customer)
+        order.pizza.add(pizza)
+        return redirect("delivery:pizza-menu-list")
+
+
+class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Order
+    queryset = Order.objects.all()
+    success_url = reverse_lazy("delivery:order-list")
+    template_name = "delivery/order_list.html"

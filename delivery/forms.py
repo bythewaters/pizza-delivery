@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from delivery.models import Customer
+from delivery.models import Customer, Order
 
 
 class CustomerInfoUpdateForm(forms.ModelForm):

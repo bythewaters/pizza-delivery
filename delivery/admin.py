@@ -62,7 +62,7 @@ class PizzaTypeAdmin(ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(ModelAdmin):
-    list_display = ("customer", "quantity", "status")
+    list_display = ("customer", "status")
 
 
 admin.site.unregister(Group)

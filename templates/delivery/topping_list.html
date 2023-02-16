@@ -39,6 +39,11 @@
                 <p class="price">
                   {{ topping.price }}$
                 </p>
+                <form method="post" action="{% url 'delivery:order-add-topping' topping.id %} ">
+                  {% csrf_token %}
+                  <input type="hidden" name="topping_id" value="{{ topping.id }}">
+                  <button type="submit" class="btn btn-primary">Add to order</button>
+                </form>
               </div>
             {% endfor %}
           </div>

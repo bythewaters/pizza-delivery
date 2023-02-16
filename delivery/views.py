@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -164,7 +163,7 @@ class ToppingDeleteView(
     template_name = "delivery/topping_delete_form.html"
 
 
-class OrderDetailView(LoginRequiredMixin, generic.ListView):
+class OrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
     template_name = "delivery/order_list.html"
     context_object_name = "orders"
@@ -172,40 +171,32 @@ class OrderDetailView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user).order_by("-id")
 
-
-@login_required
-def order_list(request):
-    customer = request.user
-    orders = Order.objects.filter(customer=customer)
-    pizzas = Pizza.objects.all()
-
-    if request.method == "POST":
-        pizza_id = request.POST.get("pizza_id")
-        pizza = Pizza.objects.get(id=pizza_id)
-        quantity = request.POST.get("quantity")
-        order, created = Order.objects.get_or_create(customer=customer, status=False)
-        order_pizza, created = order.pizza.get_or_create(
-            pizza=pizza, defaults={"quantity": quantity}
-        )
-        if not created:
-            order_pizza.quantity += int(quantity)
-            order_pizza.save()
-
-        return redirect("order-list")
-
-    context = {
-        "orders": orders,
-        "pizzas": pizzas,
-    }
-    return render(request, "delivery/order_list.html", context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(OrderListView, self).get_context_data(**kwargs)
+        orders = self.get_queryset()
+        total_price = 0
+        for order in orders:
+            for pizza in order.pizza.all():
+                total_price += pizza.price * order.quantity
+        context["total_price"] = total_price
+        return context
 
 
-class AddToNewOrderView(View):
+class AddToNewOrderView(LoginRequiredMixin, View):
     def post(self, request, pizza_id):
         pizza = Pizza.objects.get(id=pizza_id)
         customer = request.user
         order = Order.objects.create(customer=customer)
         order.pizza.add(pizza)
+        return redirect("delivery:pizza-menu-list")
+
+
+class AddToToppingOrderView(LoginRequiredMixin, View):
+    def post(self, request, topping_id):
+        pizza = Pizza.objects.get(id=topping_id)
+        customer = request.user
+        order = Order.objects.create(customer=customer)
+        order.pizza.add(pizza.topping.name)
         return redirect("delivery:pizza-menu-list")
 
 
@@ -216,19 +207,23 @@ class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "delivery/order_list.html"
 
 
-class IncrementQuantityView(View):
+class IncrementQuantityView(LoginRequiredMixin, View):
     def post(self, request, pk):
         order = Order.objects.get(id=pk)
         order.quantity += 1
+        for pizza in order.pizza.all():
+            pizza.price *= order.quantity
         order.save()
         return redirect('delivery:order-list')
 
 
-class DecrementQuantityView(View):
+class DecrementQuantityView(LoginRequiredMixin, View):
     def post(self, request, pk):
         order = Order.objects.get(id=pk)
         if order.quantity > 1:
             order.quantity -= 1
+            for pizza in order.pizza.all():
+                pizza.price *= order.quantity
             order.save()
         else:
             order.delete()

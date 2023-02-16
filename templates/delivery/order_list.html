@@ -28,13 +28,13 @@
                       <form method="post" action="{% url 'delivery:order-increment' pk=order.id %}">
                           {% csrf_token %}
                           <input type="hidden" name="order_id" value="{{order.id }}">
-                          <button type="submit">+</button>
+                          <button type="submit" class="quantity-right-plus btn btn-success btn-number">+</button>
                       </form>
-                      <p>{{ order.quantity }}</p>
+                      <p style="padding-left: 10px; padding-right: 10px;" class="lead fw-normal mb-2" >{{ order.quantity }}</p>
                       <form method="post" action="{% url 'delivery:order-decrement' pk=order.id %}">
                           {% csrf_token %}
                           <input type="hidden" name="order_id" value="{{ order.id }}">
-                          <button type="submit">-</button>
+                          <button type="submit" class="quantity-left-minus btn btn-danger btn-number" >-</button>
                       </form>
                     </div>
                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
@@ -44,7 +44,7 @@
                       <form action="{% url 'delivery:order-delete' pk=order.id %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="order_id" id="order_id" value="{{order.id}}">
-                        <button type="submit"><i class="btn btn-primary"></i> Delete</button>
+                        <button type="submit" class="quantity-left-minus btn btn-danger btn-number">Delete</button>
                       </form>
                     </div>
                   </div>
@@ -52,6 +52,12 @@
               </div>
           {% endfor %}
         {% endfor %}
+          <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1; card">
+            <div class="card-body" style="width: 400px">
+              <h5 class="mb-0">Total price: {{ total_price }}$</h5>
+            </div>
+          </div>
+          <br>
           <div class="card">
             <div class="card-body">
               <button type="button" class="btn btn-warning btn-block btn-lg">Proceed to Pay</button>

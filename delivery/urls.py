@@ -14,9 +14,12 @@ from delivery.views import (
     PizzaUpdateView,
     PizzaCreateView,
     PizzaDeleteView,
-    OrderDetailView,
+    OrderListView,
     AddToNewOrderView,
-    OrderDeleteView, IncrementQuantityView, DecrementQuantityView
+    OrderDeleteView,
+    IncrementQuantityView,
+    DecrementQuantityView,
+    AddToToppingOrderView
 )
 
 urlpatterns = [
@@ -34,8 +37,9 @@ urlpatterns = [
     path("topping/create/", ToppingCreateView.as_view(), name="topping-create"),
     path("topping/<int:pk>/delete/", ToppingDeleteView.as_view(), name="topping-delete"),
     path("topping/", ToppingListView.as_view(), name="topping-list"),
-    path("order/", OrderDetailView.as_view(), name="order-list"),
+    path("order/", OrderListView.as_view(), name="order-list"),
     path("order/add-pizza/<int:pizza_id>/", AddToNewOrderView.as_view(), name="order-add-pizza"),
+    path("order/add-topping/<int:topping_id>/", AddToToppingOrderView.as_view(), name="order-add-topping"),
     path("order-delete/<int:pk>/", OrderDeleteView.as_view(), name="order-delete"),
     path("increment/<int:pk>/", IncrementQuantityView.as_view(), name="order-increment"),
     path("decrement/<int:pk>/", DecrementQuantityView.as_view(), name="order-decrement"),

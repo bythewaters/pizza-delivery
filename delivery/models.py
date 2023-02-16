@@ -63,6 +63,7 @@ class Pizza(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     ingredients = models.TextField(blank=True, null=True)
     topping = models.ManyToManyField(Topping, related_name="pizza_topping")
+    pizza_change_price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
     class Meta:
         ordering = ["name"]

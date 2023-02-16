@@ -178,6 +178,8 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         for order in orders:
             for pizza in order.pizza.all():
                 total_price += pizza.price * order.quantity
+                pizza.pizza_change_price = pizza.price * order.quantity
+                pizza.save()
         context["total_price"] = total_price
         return context
 
@@ -211,10 +213,8 @@ class IncrementQuantityView(LoginRequiredMixin, View):
     def post(self, request, pk):
         order = Order.objects.get(id=pk)
         order.quantity += 1
-        for pizza in order.pizza.all():
-            pizza.price *= order.quantity
         order.save()
-        return redirect('delivery:order-list')
+        return redirect("delivery:order-list")
 
 
 class DecrementQuantityView(LoginRequiredMixin, View):
@@ -222,9 +222,8 @@ class DecrementQuantityView(LoginRequiredMixin, View):
         order = Order.objects.get(id=pk)
         if order.quantity > 1:
             order.quantity -= 1
-            for pizza in order.pizza.all():
-                pizza.price *= order.quantity
             order.save()
         else:
             order.delete()
-        return redirect('delivery:order-list')
+
+        return redirect("delivery:order-list")

@@ -27,7 +27,7 @@
                     <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                       <form method="post" action="{% url 'delivery:order-increment' pk=order.id %}">
                           {% csrf_token %}
-                          <input type="hidden" name="order_id" value="{{order.id }}">
+                          <input type="hidden" name="order_id" value="{{ order.id }}">
                           <button type="submit" class="quantity-right-plus btn btn-success btn-number">+</button>
                       </form>
                       <p style="padding-left: 10px; padding-right: 10px;" class="lead fw-normal mb-2" >{{ order.quantity }}</p>
@@ -38,7 +38,7 @@
                       </form>
                     </div>
                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                      <h5 class="mb-0">{{ pizza.price }} $</h5>
+                      <h5 class="mb-0">{{ pizza.pizza_change_price }} $</h5>
                     </div>
                     <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                       <form action="{% url 'delivery:order-delete' pk=order.id %}" method="post">

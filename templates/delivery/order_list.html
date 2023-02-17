@@ -22,7 +22,17 @@
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-3">
                       <p class="lead fw-normal mb-2">{{ pizza.name}}</p>
-                      <p><span class="text-muted">Ingredients: </span> {{ pizza.ingredients }} </p>
+                          <p><span class="text-muted">Ingredients: </span> {{ pizza.ingredients }} </p>
+                            <p>
+                              <span class="text-muted">Toppings: </span>
+                              {% for topping in pizza.topping.all %}
+                                {% if topping.price %}
+                                  {{ topping.name }} ({{ topping.price }} $)
+                                {% else %}
+                                  <p></p>
+                                {% endif %}
+                              {% endfor %}
+                            </p>
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                       <form method="post" action="{% url 'delivery:order-increment' pk=order.id %}">
@@ -53,8 +63,8 @@
           {% endfor %}
         {% endfor %}
           <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1; card">
-            <div class="card-body" style="width: 400px">
-              <h5 class="mb-0">Total price: {{ total_price }}$</h5>
+            <div class="card-body" >
+              <h5 class="mb-0">Total price: {{ total_price }} $</h5>
             </div>
           </div>
           <br>

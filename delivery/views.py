@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
 
-from delivery.forms import CustomerInfoUpdateForm, RegisterForm, ToppingSearchForm
+from delivery.forms import CustomerInfoUpdateForm, RegisterForm, ToppingSearchForm, FeedBackForm
 from delivery.models import (
     Pizza,
     Topping,
@@ -180,6 +180,8 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
                 total_price += pizza.price * order.quantity
                 pizza.pizza_change_price = pizza.price * order.quantity
                 pizza.save()
+                for topping in pizza.topping.all():
+                    total_price += topping.price
         context["total_price"] = total_price
         return context
 
@@ -195,10 +197,10 @@ class AddToNewOrderView(LoginRequiredMixin, View):
 
 class AddToToppingOrderView(LoginRequiredMixin, View):
     def post(self, request, topping_id):
-        pizza = Pizza.objects.get(id=topping_id)
+        topping_id = Topping.objects.get(id=topping_id)
         customer = request.user
         order = Order.objects.create(customer=customer)
-        order.pizza.add(pizza.topping.name)
+        order.pizza.add(topping_id.topping.name)
         return redirect("delivery:pizza-menu-list")
 
 
@@ -227,3 +229,25 @@ class DecrementQuantityView(LoginRequiredMixin, View):
             order.delete()
 
         return redirect("delivery:order-list")
+
+
+class FeedBackListView(LoginRequiredMixin, generic.ListView):
+    model = FeedBack
+    queryset = FeedBack.objects.select_related("customer").order_by("-created_time")
+    template_name = "delivery/feedback.html"
+    paginate_by = 3
+
+    def post(self, request):
+        form = FeedBackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.customer = self.request.user
+            feedback.save()
+        return redirect("delivery:feedback-list")
+
+
+# class FeedBackCreateView(LoginRequiredMixin, generic.CreateView):
+#     model = FeedBack
+#     form_class = FeedBackForm
+#     template_name = "delivery/feedback.html"
+#     success_url = reverse_lazy("delivery:feedback-list")

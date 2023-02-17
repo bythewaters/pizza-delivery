@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from delivery.models import Customer, Order
+from delivery.models import Customer, FeedBack
 
 
 class CustomerInfoUpdateForm(forms.ModelForm):
@@ -28,3 +28,9 @@ class ToppingSearchForm(forms.Form):
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Search for name..."})
     )
+
+
+class FeedBackForm(forms.ModelForm):
+    class Meta:
+        model = FeedBack
+        fields = ["comment"]

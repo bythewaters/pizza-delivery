@@ -30,7 +30,7 @@ class ToppingSearchForm(forms.Form):
     )
 
 
-class FeedBackForm(forms.ModelForm):
+class FeedBackCreateForm(forms.ModelForm):
     class Meta:
         model = FeedBack
         fields = ["comment"]

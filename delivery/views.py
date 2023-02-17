@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
 
-from delivery.forms import CustomerInfoUpdateForm, RegisterForm, ToppingSearchForm, FeedBackForm
+from delivery.forms import CustomerInfoUpdateForm, RegisterForm, ToppingSearchForm, FeedBackCreateForm
 from delivery.models import (
     Pizza,
     Topping,
@@ -238,16 +238,9 @@ class FeedBackListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 3
 
     def post(self, request):
-        form = FeedBackForm(request.POST)
+        form = FeedBackCreateForm(request.POST)
         if form.is_valid():
             feedback = form.save(commit=False)
             feedback.customer = self.request.user
             feedback.save()
         return redirect("delivery:feedback-list")
-
-
-# class FeedBackCreateView(LoginRequiredMixin, generic.CreateView):
-#     model = FeedBack
-#     form_class = FeedBackForm
-#     template_name = "delivery/feedback.html"
-#     success_url = reverse_lazy("delivery:feedback-list")

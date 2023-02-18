@@ -75,7 +75,9 @@ class Pizza(models.Model):
 class Order(models.Model):
     pizza = models.ManyToManyField(Pizza, related_name="order")
     status = models.BooleanField(default=False)
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    customer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.pizza.name}"

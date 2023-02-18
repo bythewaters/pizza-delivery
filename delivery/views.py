@@ -1,5 +1,8 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin
+)
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -9,7 +12,7 @@ from delivery.forms import (
     CustomerInfoUpdateForm,
     RegisterForm,
     ToppingSearchForm,
-    FeedBackCreateForm
+    FeedBackCreateForm,
 )
 from delivery.models import (
     Pizza,
@@ -18,7 +21,7 @@ from delivery.models import (
     PizzaType,
     Customer,
     Order,
-    Receipt
+    Receipt,
 )
 
 
@@ -95,7 +98,11 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
-class PizzaCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+class PizzaCreateView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.CreateView
+):
     permission_required = "delivery.add_pizza"
     model = Pizza
     fields = "__all__"
@@ -103,7 +110,11 @@ class PizzaCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Creat
     template_name = "delivery/pizza_update_create_form.html"
 
 
-class PizzaUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+class PizzaUpdateView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.UpdateView
+):
     permission_required = "delivery.change_pizza"
     model = Pizza
     fields = "__all__"
@@ -111,7 +122,11 @@ class PizzaUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Updat
     template_name = "delivery/pizza_update_create_form.html"
 
 
-class PizzaDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+class PizzaDeleteView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.DeleteView
+):
     permission_required = "delivery.delete_pizza"
     model = Pizza
     queryset = Pizza.objects.prefetch_related("order__pizza")
@@ -128,14 +143,18 @@ class ToppingListView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ToppingListView, self).get_context_data(**kwargs)
         topping = self.request.GET.get("topping", "")
-        context["topping_form"] = ToppingSearchForm(initial={"topping": topping})
+        context["topping_form"] = ToppingSearchForm(
+            initial={"topping": topping}
+        )
         return context
 
     def get_queryset(self):
         form = ToppingSearchForm(self.request.GET)
 
         if form.is_valid():
-            return self.queryset.filter(name__icontains=form.cleaned_data["topping"])
+            return self.queryset.filter(
+                name__icontains=form.cleaned_data["topping"]
+            )
         return self.queryset
 
 
@@ -210,16 +229,6 @@ class AddToNewOrderView(LoginRequiredMixin, View):
         return redirect("delivery:pizza-menu-list")
 
 
-class AddToToppingOrderView(LoginRequiredMixin, View):
-    @staticmethod
-    def post(request, topping_id):
-        topping_id = Topping.objects.get(id=topping_id)
-        customer = request.user
-        order = Order.objects.create(customer=customer)
-        order.pizza.add(topping_id.topping.name)
-        return redirect("delivery:pizza-menu-list")
-
-
 class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Order
     success_url = reverse_lazy("delivery:order-list")
@@ -250,9 +259,21 @@ class DecrementQuantityView(LoginRequiredMixin, View):
         return redirect("delivery:order-list")
 
 
+class AddToToppingOrderView(LoginRequiredMixin, View):
+    @staticmethod
+    def post(request, topping_id):
+        topping_id = Topping.objects.get(id=topping_id)
+        customer = request.user
+        order = Order.objects.create(customer=customer)
+        order.pizza.add(topping_id.topping.name)
+        return redirect("delivery:pizza-menu-list")
+
+
 class FeedBackListView(LoginRequiredMixin, generic.ListView):
     model = FeedBack
-    queryset = FeedBack.objects.select_related("customer").order_by("-created_time")
+    queryset = FeedBack.objects.select_related(
+        "customer"
+    ).order_by("-created_time")
     template_name = "delivery/feedback.html"
     paginate_by = 3
 
@@ -266,7 +287,9 @@ class FeedBackListView(LoginRequiredMixin, generic.ListView):
 
 
 def create_receipt(request):
-    order = Order.objects.filter(customer=request.user, status=False).first()
+    order = Order.objects.filter(
+        customer=request.user, status=False
+    ).first()
     if order:
         Receipt.objects.create(customer_order=order)
         order.status = True
@@ -276,12 +299,18 @@ def create_receipt(request):
 
 class ReceiptListView(LoginRequiredMixin, generic.ListView):
     model = Receipt
-    receipt = Receipt.objects.select_related("customer_order").prefetch_related("customer_order__pizza")
+    receipt = Receipt.objects.select_related(
+        "customer_order"
+    ).prefetch_related(
+        "customer_order__pizza"
+    )
     template_name = "delivery/receipt_list.html"
     context_object_name = "receipt_order"
 
     def get_queryset(self):
-        return Receipt.objects.filter(customer_order__customer=self.request.user).order_by("-order_time")
+        return Receipt.objects.filter(
+            customer_order__customer=self.request.user
+        ).order_by("-order_time")
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ReceiptListView, self).get_context_data(**kwargs)

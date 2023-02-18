@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <br>
+  <div class="card">
+    <div class="card-body mx-4">
+      <div class="container">
+        <p class="my-5 mx-5" style="font-size: 30px;">Thank for your purchase</p>
+        {% for receipt in receipt_order %}
+          <div class="row">
+            <ul class="list-unstyled">
+              <li class="text-black">
+                {{ receipt.customer_order.customer.first_name }} {{ receipt.customer_order.customer.last_name }}
+              </li>
+              <li class="text-muted mt-1"><span class="text-black">Receipt</span> #{{ receipt.customer_order.id }}</li>
+              <li class="text-black mt-1">{{ receipt.order_time }}</li>
+            </ul>
+            {% for pizza in receipt.customer_order.pizza.all %}
+              <hr>
+              <div class="col-xl-10">
+                <p>{{ pizza.name }}</p>
+              </div>
+              <div class="col-xl-2">
+                <p class="float-end">{{ pizza.price }}</p>
+              </div>
+              <hr>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="row text-black">
+          <div class="col-xl-12">
+            <p class="float-end fw-bold">Total: $0</p>
+          </div>
+          <hr style="border: 2px solid black;">
+        </div>
+        <div class="text-center" style="margin-top: 90px;">
+          <a><u class="text-info">View in browser</u></a>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

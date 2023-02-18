@@ -5,7 +5,12 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
 
-from delivery.forms import CustomerInfoUpdateForm, RegisterForm, ToppingSearchForm, FeedBackCreateForm
+from delivery.forms import (
+    CustomerInfoUpdateForm,
+    RegisterForm,
+    ToppingSearchForm,
+    FeedBackCreateForm
+)
 from delivery.models import (
     Pizza,
     Topping,
@@ -13,6 +18,7 @@ from delivery.models import (
     PizzaType,
     Customer,
     Order,
+    Receipt
 )
 
 
@@ -47,8 +53,8 @@ class CustomerUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = "delivery/customer_update_form.html"
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.save()
+        valid_form = form.save(commit=False)
+        valid_form.save()
         return redirect("delivery:customer-detail", self.object.pk)
 
 
@@ -169,7 +175,7 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "orders"
 
     def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user).order_by("-id")
+        return Order.objects.filter(customer=self.request.user)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(OrderListView, self).get_context_data(**kwargs)
@@ -177,8 +183,8 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         total_price = 0
         for order in orders:
             for pizza in order.pizza.all():
-                total_price += pizza.price * order.quantity
-                pizza.pizza_change_price = pizza.price * order.quantity
+                total_price += pizza.price * pizza.quantity
+                pizza.pizza_change_price = pizza.price * pizza.quantity
                 pizza.save()
                 for topping in pizza.topping.all():
                     total_price += topping.price
@@ -187,16 +193,23 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
 
 
 class AddToNewOrderView(LoginRequiredMixin, View):
-    def post(self, request, pizza_id):
+    @staticmethod
+    def post(request, pizza_id):
         pizza = Pizza.objects.get(id=pizza_id)
         customer = request.user
-        order = Order.objects.create(customer=customer)
-        order.pizza.add(pizza)
+        try:
+            order = Order.objects.get(customer=customer)
+            order.pizza.add(pizza)
+        except Exception:
+            order = Order.objects.create(customer=customer)
+            order.pizza.add(pizza)
+
         return redirect("delivery:pizza-menu-list")
 
 
 class AddToToppingOrderView(LoginRequiredMixin, View):
-    def post(self, request, topping_id):
+    @staticmethod
+    def post(request, topping_id):
         topping_id = Topping.objects.get(id=topping_id)
         customer = request.user
         order = Order.objects.create(customer=customer)
@@ -206,28 +219,31 @@ class AddToToppingOrderView(LoginRequiredMixin, View):
 
 class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Order
-    queryset = Order.objects.all()
     success_url = reverse_lazy("delivery:order-list")
     template_name = "delivery/order_list.html"
 
+    def post(self, request, *args, **kwargs):
+        order = Order.objects.get(id=kwargs.get("order_id"))
+        order.pizza.remove(kwargs.get("pizza_id"))
+        return redirect("delivery:order-list")
+
 
 class IncrementQuantityView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        order = Order.objects.get(id=pk)
-        order.quantity += 1
-        order.save()
+    @staticmethod
+    def post(request, pk):
+        pizza = Pizza.objects.get(id=pk)
+        pizza.quantity += 1
+        pizza.save()
         return redirect("delivery:order-list")
 
 
 class DecrementQuantityView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        order = Order.objects.get(id=pk)
-        if order.quantity > 1:
-            order.quantity -= 1
-            order.save()
-        else:
-            order.delete()
-
+    @staticmethod
+    def post(request, pk):
+        pizza = Pizza.objects.get(id=pk)
+        if pizza.quantity > 1:
+            pizza.quantity -= 1
+            pizza.save()
         return redirect("delivery:order-list")
 
 
@@ -244,3 +260,22 @@ class FeedBackListView(LoginRequiredMixin, generic.ListView):
             feedback.customer = self.request.user
             feedback.save()
         return redirect("delivery:feedback-list")
+
+
+def create_receipt(request):
+    order = Order.objects.filter(customer=request.user, status=False).first()
+    if order:
+        Receipt.objects.create(customer_order=order)
+        order.status = True
+        order.save()
+    return redirect("delivery:receipt-list")
+
+
+class ReceiptListView(LoginRequiredMixin, generic.ListView):
+    model = Receipt
+    receipt = Receipt.objects.select_related("customer_order").prefetch_related("customer_order__pizza")
+    template_name = "delivery/receipt_list.html"
+    context_object_name = "receipt_order"
+
+    def get_queryset(self):
+        return Receipt.objects.filter(customer_order__customer=self.request.user).order_by("-order_time")

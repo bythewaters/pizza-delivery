@@ -21,7 +21,8 @@ from delivery.views import (
     DecrementQuantityView,
     AddToToppingOrderView,
     FeedBackListView,
-    # FeedBackCreateView,
+    create_receipt,
+    ReceiptListView
 )
 
 urlpatterns = [
@@ -42,11 +43,12 @@ urlpatterns = [
     path("order/", OrderListView.as_view(), name="order-list"),
     path("order/add-pizza/<int:pizza_id>/", AddToNewOrderView.as_view(), name="order-add-pizza"),
     path("order/add-topping/<int:topping_id>/", AddToToppingOrderView.as_view(), name="order-add-topping"),
-    path("order-delete/<int:pk>/", OrderDeleteView.as_view(), name="order-delete"),
+    path("order-delete/<int:order_id>/<int:pizza_id>/", OrderDeleteView.as_view(), name="order-delete"),
     path("increment/<int:pk>/", IncrementQuantityView.as_view(), name="order-increment"),
     path("decrement/<int:pk>/", DecrementQuantityView.as_view(), name="order-decrement"),
     path("feedback/", FeedBackListView.as_view(), name="feedback-list"),
-    # path("feedback/create/", FeedBackCreateView.as_view(), name="feedback-create"),
+    path("create-receipt/", create_receipt, name="receipt-create"),
+    path("receipt/", ReceiptListView.as_view(), name="receipt-list"),
 ]
 
 app_name = "delivery"

@@ -64,6 +64,7 @@ class Pizza(models.Model):
     ingredients = models.TextField(blank=True, null=True)
     topping = models.ManyToManyField(Topping, related_name="pizza_topping")
     pizza_change_price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    quantity = models.IntegerField(default=1)
 
     class Meta:
         ordering = ["name"]
@@ -76,15 +77,14 @@ class Order(models.Model):
     pizza = models.ManyToManyField(Pizza, related_name="order")
     status = models.BooleanField(default=False)
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return f"{self.pizza.name}"
 
 
-class Payment(models.Model):
+class Receipt(models.Model):
     customer_order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.order_time
+        return f"Receipt #{self.pk} ({self.order_time})"

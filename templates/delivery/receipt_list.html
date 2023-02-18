@@ -2,43 +2,66 @@
 {% load static %}
 
 {% block content %}
-  <br>
-  <div class="card">
-    <div class="card-body mx-4">
-      <div class="container">
-        <p class="my-5 mx-5" style="font-size: 30px;">Thank for your purchase</p>
-        {% for receipt in receipt_order %}
-          <div class="row">
-            <ul class="list-unstyled">
-              <li class="text-black">
-                {{ receipt.customer_order.customer.first_name }} {{ receipt.customer_order.customer.last_name }}
-              </li>
-              <li class="text-muted mt-1"><span class="text-black">Receipt</span> #{{ receipt.customer_order.id }}</li>
-              <li class="text-black mt-1">{{ receipt.order_time }}</li>
-            </ul>
-            {% for pizza in receipt.customer_order.pizza.all %}
-              <hr>
-              <div class="col-xl-10">
-                <p>{{ pizza.name }}</p>
-              </div>
-              <div class="col-xl-2">
-                <p class="float-end">{{ pizza.price }}</p>
-              </div>
-              <hr>
-            {% endfor %}
-          </div>
-        {% endfor %}
-        <div class="row text-black">
-          <div class="col-xl-12">
-            <p class="float-end fw-bold">Total: $0</p>
-          </div>
-          <hr style="border: 2px solid black;">
+  <div id="invoice">
+    <div class="invoice overflow-auto">
+        <div style="min-width: 600px">
+          {% for order in receipt_order %}
+            <main>
+                <div class="row contacts">
+                    <div class="col invoice-to" style="margin-top: 60px">
+                        <div class="text-gray-light">CUSTOMER:</div>
+                        <h2 class="to">
+                          {{ order.customer_order.customer.first_name }}
+                          {{ order.customer_order.customer.last_name }}
+                        </h2>
+                        <div class="address">{{ order.customer_order.customer.address }}</div>
+                        <div class="email"><a href="mailto:john@example.com">{{ order.customer_order.customer.email }}</a></div>
+                        <div class="address">Order time: {{ order.order_time }}</div>
+                        <div class="address">Order id: {{ order.id }}</div>
+                    </div>
+                </div>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th>Pizza id</th>
+                            <th class="text-left">PIZZA</th>
+                            <th class="text-right">PRICE</th>
+                            <th class="text-right">QUANTITY</th>
+                            <th class="text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% for pizza in order.customer_order.pizza.all %}
+                            <tr>
+                                <td class="no">{{ pizza.id }}</td>
+                                <td class="text-left"><h3>
+                                  {{ pizza.name }}
+                                </h3>
+                                 {% for topping in pizza.topping.all %}
+                                    <p>{{ topping.name }}: {{ topping.price }} $</p>
+                                  {% endfor %}
+                                </td>
+                                <td class="unit">{{ pizza.price }} $</td>
+                                <td class="qty">{{ pizza.quantity }}</td>
+                                <td class="total">{{ pizza.pizza_change_price }} $</td>
+                            </tr>
+                      {% endfor %}
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">TOTAL PRICE:</td>
+                            <td>{{ total_price }} $</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="thanks" style="margin-top: 10px">Thank you for order!</div>
+                <div class="thanks" style="margin-top: 10px">
+                  <a href="{% url 'delivery:pizza-menu-list' %}">Go our pizza menu</a>
+                </div>
+            </main>
+          {% endfor %}
         </div>
-        <div class="text-center" style="margin-top: 90px;">
-          <a><u class="text-info">View in browser</u></a>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
-        </div>
-      </div>
+        <div></div>
     </div>
-  </div>
+</div>
 {% endblock %}

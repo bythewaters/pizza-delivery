@@ -26,11 +26,7 @@
                             <p>
                               <span class="text-muted">Toppings: </span>
                               {% for topping in pizza.topping.all %}
-                                {% if topping.price %}
-                                  {{ topping.name }} ({{ topping.price }} $)
-                                {% else %}
-                                  <p></p>
-                                {% endif %}
+                                  {{ topping.name }}: {{ topping.price }} $
                               {% endfor %}
                             </p>
                     </div>
@@ -71,7 +67,7 @@
           <div class="card">
             <div class="card-body">
               <a href="{% url 'delivery:receipt-create' %}">
-                <button type="button" class="btn btn-warning btn-block btn-lg">Proceed to Pay</button>
+                <button type="button" class="btn btn-warning btn-block btn-lg">Order now!</button>
               </a>
             </div>
           </div>

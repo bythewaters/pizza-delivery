@@ -187,6 +187,7 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
                 pizza.pizza_change_price = pizza.price * pizza.quantity
                 pizza.save()
                 for topping in pizza.topping.all():
+                    pizza.pizza_change_price += topping.price
                     total_price += topping.price
         context["total_price"] = total_price
         return context
@@ -279,3 +280,15 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Receipt.objects.filter(customer_order__customer=self.request.user).order_by("-order_time")
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ReceiptListView, self).get_context_data(**kwargs)
+        order = self.get_queryset()
+        total_price = 0
+        for order in order:
+            for pizza in order.customer_order.pizza.all():
+                total_price += pizza.price * pizza.quantity
+                for topping in pizza.topping.all():
+                    total_price += topping.price
+        context["total_price"] = total_price
+        return context

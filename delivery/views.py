@@ -78,7 +78,7 @@ class RegisterView(generic.CreateView):
 
 class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     model = Pizza
-    pizza = Pizza.objects.select_related("type_pizza_id")
+    pizza = Pizza.objects.select_related("type_pizza_id").prefetch_related("topping")
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"
 
@@ -194,11 +194,11 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "orders"
 
     def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user)
+        return Order.objects.select_related("customer").filter(customer=self.request.user)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(OrderListView, self).get_context_data(**kwargs)
-        orders = self.get_queryset()
+        orders = self.get_queryset().prefetch_related("pizza")
         total_price = 0
         pizza_price_with_topping = 0
         for order in orders:
@@ -314,7 +314,7 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ReceiptListView, self).get_context_data(**kwargs)
-        order = self.get_queryset()
+        order = self.get_queryset().prefetch_related("customer_order__pizza")
         total_price = 0
         pizza_price_with_topping = 0
         for order in order:

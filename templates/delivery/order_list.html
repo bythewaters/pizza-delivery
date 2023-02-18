@@ -44,7 +44,7 @@
                         </form>
                       </div>
                       <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                        <h5 class="mb-0">{{ pizza.pizza_change_price }} $</h5>
+                        <h5 class="mb-0">{{ pizza_price_with_topping }} $</h5>
                       </div>
                       <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                         <form action="{% url 'delivery:order-delete' pizza_id=pizza.id order_id=order.id %}" method="post">

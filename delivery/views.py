@@ -181,15 +181,17 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         context = super(OrderListView, self).get_context_data(**kwargs)
         orders = self.get_queryset()
         total_price = 0
+        pizza_price_with_topping = 0
         for order in orders:
             for pizza in order.pizza.all():
                 total_price += pizza.price * pizza.quantity
-                pizza.pizza_change_price = pizza.price * pizza.quantity
+                pizza_price_with_topping = pizza.price * pizza.quantity
                 pizza.save()
                 for topping in pizza.topping.all():
-                    pizza.pizza_change_price += topping.price
+                    pizza_price_with_topping += topping.price
                     total_price += topping.price
         context["total_price"] = total_price
+        context["pizza_price_with_topping"] = pizza_price_with_topping
         return context
 
 
@@ -285,12 +287,16 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
         context = super(ReceiptListView, self).get_context_data(**kwargs)
         order = self.get_queryset()
         total_price = 0
+        pizza_price_with_topping = 0
         for order in order:
             for pizza in order.customer_order.pizza.all():
                 total_price += pizza.price * pizza.quantity
+                pizza_price_with_topping = pizza.price * pizza.quantity
                 for topping in pizza.topping.all():
+                    pizza_price_with_topping += topping.price
                     total_price += topping.price
         context["total_price"] = total_price
+        context["pizza_price_with_topping"] = pizza_price_with_topping
         return context
 
 

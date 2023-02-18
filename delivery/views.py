@@ -292,3 +292,10 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
                     total_price += topping.price
         context["total_price"] = total_price
         return context
+
+
+def clean_order(request, pk):
+    order = Order.objects.get(id=pk)
+    order.delete()
+
+    return redirect(reverse_lazy("delivery:index"))

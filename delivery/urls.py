@@ -22,7 +22,8 @@ from delivery.views import (
     AddToToppingOrderView,
     FeedBackListView,
     create_receipt,
-    ReceiptListView
+    ReceiptListView,
+    clean_order
 )
 
 urlpatterns = [
@@ -49,6 +50,7 @@ urlpatterns = [
     path("feedback/", FeedBackListView.as_view(), name="feedback-list"),
     path("create-receipt/", create_receipt, name="receipt-create"),
     path("receipt/", ReceiptListView.as_view(), name="receipt-list"),
+    path("clean-order/<int:pk>/", clean_order, name="clean-order"),
 ]
 
 app_name = "delivery"

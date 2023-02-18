@@ -45,7 +45,7 @@
                     <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
                   {% endif %}
                   {% if perms.delivery.delete_pizza %}
-                    <a style="text-decoration: none" href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
+                    <a style="text-decoration: none"  href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
                       ❌
                     </a>
                   {% endif %}

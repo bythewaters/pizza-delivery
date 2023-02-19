@@ -26,6 +26,7 @@
                             <th>Pizza id</th>
                             <th class="text-left">PIZZA</th>
                             <th class="text-right">PRICE</th>
+                            <th class="text-right">Topping total price</th>
                             <th class="text-right">QUANTITY</th>
                             <th class="text-right">TOTAL</th>
                         </tr>
@@ -42,14 +43,15 @@
                                   {% endfor %}
                                 </td>
                                 <td class="unit">{{ pizza.price }} $</td>
-                                <td class="qty">{{ pizza.quantity }}</td>
-                                <td class="total">{{ pizza_price_with_topping }} $</td>
+                                <td class="qty">{{ topping_total_price }} $</td>
+                                <td class="unit">{{ pizza.quantity }}</td>
+                                <td class="total">{{ pizza.price_with_toppings }} $</td>
                             </tr>
                       {% endfor %}
                     <tfoot>
                         <tr>
                             <td colspan="2"></td>
-                            <td colspan="2">TOTAL PRICE:</td>
+                            <td colspan="3">TOTAL PRICE:</td>
                             <td>{{ total_price }} $</td>
                         </tr>
                     </tfoot>

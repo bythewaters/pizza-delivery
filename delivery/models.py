@@ -61,6 +61,7 @@ class Pizza(models.Model):
     name = models.CharField(max_length=63)
     type_pizza = models.ForeignKey(PizzaType, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=6, decimal_places=2)
+    price_with_toppings = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     ingredients = models.TextField(blank=True, null=True)
     topping = models.ManyToManyField(Topping, related_name="pizza_topping")
     quantity = models.IntegerField(default=1)

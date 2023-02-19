@@ -200,17 +200,15 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         context = super(OrderListView, self).get_context_data(**kwargs)
         orders = self.get_queryset().prefetch_related("pizza")
         total_price = 0
-        pizza_price_with_topping = 0
         for order in orders:
             for pizza in order.pizza.all():
                 total_price += pizza.price * pizza.quantity
-                pizza_price_with_topping = pizza.price * pizza.quantity
-                pizza.save()
+                pizza.price_with_toppings = pizza.price * pizza.quantity
                 for topping in pizza.topping.all():
-                    pizza_price_with_topping += topping.price
+                    pizza.price_with_toppings += topping.price
                     total_price += topping.price
+                    pizza.save()
         context["total_price"] = total_price
-        context["pizza_price_with_topping"] = pizza_price_with_topping
         return context
 
 
@@ -235,8 +233,11 @@ class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "delivery/order_list.html"
 
     def post(self, request, *args, **kwargs):
+        pizza = Pizza.objects.get(id=kwargs.get("pizza_id"))
         order = Order.objects.get(id=kwargs.get("order_id"))
         order.pizza.remove(kwargs.get("pizza_id"))
+        pizza.quantity = 1
+        pizza.save()
         return redirect("delivery:order-list")
 
 
@@ -316,16 +317,18 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
         context = super(ReceiptListView, self).get_context_data(**kwargs)
         order = self.get_queryset().prefetch_related("customer_order__pizza")
         total_price = 0
-        pizza_price_with_topping = 0
+        topping_total_price = 0
         for order in order:
             for pizza in order.customer_order.pizza.all():
                 total_price += pizza.price * pizza.quantity
-                pizza_price_with_topping = pizza.price * pizza.quantity
+                pizza.price_with_toppings = pizza.price * pizza.quantity
                 for topping in pizza.topping.all():
-                    pizza_price_with_topping += topping.price
+                    pizza.price_with_toppings += topping.price
+                    topping_total_price += topping.price
                     total_price += topping.price
+                    pizza.save()
         context["total_price"] = total_price
-        context["pizza_price_with_topping"] = pizza_price_with_topping
+        context["topping_total_price"] = topping_total_price
         return context
 
 

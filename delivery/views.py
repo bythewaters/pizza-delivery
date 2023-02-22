@@ -12,7 +12,8 @@ from delivery.forms import (
     CustomerInfoUpdateForm,
     RegisterForm,
     ToppingSearchForm,
-    FeedBackCreateForm, ToppingForm,
+    FeedBackCreateForm,
+    PizzaForm,
 )
 from delivery.models import (
     Pizza,
@@ -204,10 +205,12 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
             for pizza in order.pizza.all():
                 total_price += pizza.price * pizza.quantity
                 pizza.price_with_toppings = pizza.price * pizza.quantity
-                for topping in pizza.topping.all():
-                    pizza.price_with_toppings += topping.price
-                    total_price += topping.price
-                    pizza.save()
+                pizza.save()
+                if pizza.topping.all:
+                    for topping in pizza.topping.all():
+                        pizza.price_with_toppings += topping.price
+                        total_price += topping.price
+                        pizza.save()
         context["total_price"] = total_price
         return context
 
@@ -219,10 +222,20 @@ class OrderAddPizzaView(LoginRequiredMixin, View):
         customer = request.user
         try:
             order = Order.objects.get(customer=customer)
-            order.pizza.add(pizza)
-        except Exception:
+        except Order.DoesNotExist:
             order = Order.objects.create(customer=customer)
-            order.pizza.add(pizza)
+
+        new_pizza = Pizza.objects.create(
+            name=pizza.name,
+            type_pizza=pizza.type_pizza,
+            price=pizza.price,
+            price_with_toppings=pizza.price_with_toppings,
+            ingredients=pizza.ingredients,
+            quantity=1,
+            is_custom_pizza=True
+        )
+
+        order.pizza.add(new_pizza)
 
         return redirect("delivery:pizza-menu-list")
 
@@ -237,7 +250,15 @@ class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
         order = Order.objects.get(id=kwargs.get("order_id"))
         order.pizza.remove(kwargs.get("pizza_id"))
         pizza.quantity = 1
+        if pizza.topping.all():
+            pizza.topping.clear()
         pizza.save()
+        if order.pizza.count() == 0:
+            order.delete()
+        try:
+            Pizza.objects.get(name=pizza.name)
+        except Pizza.MultipleObjectsReturned:
+            pizza.delete()
         return redirect("delivery:order-list")
 
 
@@ -312,6 +333,7 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
             for pizza in order.customer_order.pizza.all():
                 total_price += pizza.price * pizza.quantity
                 pizza.price_with_toppings = pizza.price * pizza.quantity
+                pizza.save()
                 for topping in pizza.topping.all():
                     pizza.price_with_toppings += topping.price
                     topping_total_price += topping.price
@@ -324,8 +346,15 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
 
 def clean_order(request, pk):
     order = Order.objects.get(id=pk)
+    for pizza in order.pizza.all():
+        try:
+            pizza_to_delete = Pizza.objects.get(id=pizza.id)
+            pizza_to_delete.delete()
+        except Pizza.DoesNotExist:
+            pass
+        except Pizza.MultipleObjectsReturned:
+            pass
     order.delete()
-
     return redirect(reverse_lazy("delivery:index"))
 
 
@@ -334,21 +363,6 @@ class ChooseToppingView(
     generic.UpdateView
 ):
     model = Pizza
-    fields = ["topping", ]
-    success_url = reverse_lazy("delivery:order-add-pizza")
+    form_class = PizzaForm
+    success_url = reverse_lazy("delivery:order-list")
     template_name = "delivery/choose_toppings.html"
-
-
-def add_toppings(request, pizza_id):
-    pizza = Pizza.objects.get(id=pizza_id)
-    if request.method == 'POST':
-        form = ToppingForm(request.POST)
-        if form.is_valid():
-            topping = form.save()
-            pizza.topping.add(topping)
-            pizza.price_with_toppings += topping.price
-            pizza.save()
-            return redirect('add_pizza_to_order', pizza_id)
-    else:
-        form = ToppingForm()
-    return render(request, 'delivery/choose_toppings.html', {'form': form, 'pizza': pizza})

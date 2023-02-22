@@ -22,7 +22,8 @@ from delivery.views import (
     FeedBackListView,
     create_receipt,
     ReceiptListView,
-    clean_order, ChooseToppingView, add_toppings,
+    clean_order,
+    ChooseToppingView,
 )
 
 urlpatterns = [
@@ -114,7 +115,7 @@ urlpatterns = [
     path("create-receipt/", create_receipt, name="receipt-create"),
     path("receipt/", ReceiptListView.as_view(), name="receipt-list"),
     path("clean-order/<int:pk>/", clean_order, name="clean-order"),
-    path("menu/add_toppings/<int:pizza_id>/", add_toppings, name="choose-topping"),
+    path("order/<int:pk>/add_toppings/", ChooseToppingView.as_view(), name="choose-topping"),
 ]
 
 app_name = "delivery"

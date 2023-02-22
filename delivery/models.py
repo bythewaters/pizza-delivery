@@ -65,6 +65,7 @@ class Pizza(models.Model):
     ingredients = models.TextField(blank=True, null=True)
     topping = models.ManyToManyField(Topping, related_name="pizza_topping")
     quantity = models.IntegerField(default=1)
+    is_custom_pizza = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["name"]

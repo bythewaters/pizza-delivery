@@ -6,7 +6,7 @@
     <section id="topping" class="topping">
       <div class="container" data-aos="fade-up">
         <div class="section-header">
-          <p>Choose <span>Extra Topping</span></p>
+          <p>Here you can see all of our <span>Topping</span></p>
           <p>
             {% if perms.delivery.add_topping %}
               <a style="text-decoration: none; margin-left: 1000px" href="{% url 'delivery:topping-create' %}">
@@ -36,14 +36,9 @@
                   </a>
                   {% endif %}
                 </h4>
-                <p class="price">
+                <h5 class="price">
                   {{ topping.price }}$
-                </p>
-{#                <form method="post" action="{% url 'delivery:order-add-topping' topping.id %} ">#}
-{#                  {% csrf_token %}#}
-{#                  <input type="hidden" name="topping_id" value="{{ topping.id }}">#}
-{#                  <button type="submit" class="btn btn-primary">Add to order</button>#}
-{#                </form>#}
+                </h5>
               </div>
             {% endfor %}
           </div>

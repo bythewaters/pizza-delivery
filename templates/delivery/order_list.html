@@ -23,12 +23,14 @@
                       <div class="col-md-3 col-lg-3 col-xl-3">
                         <p class="lead fw-normal mb-2">{{ pizza.name}}</p>
                             <p><span class="text-muted">Ingredients: </span> {{ pizza.ingredients }} </p>
+                            {% if pizza.topping.all %}
                               <p>
                                 <span class="text-muted">Toppings: </span>
                                 {% for topping in pizza.topping.all %}
                                     {{ topping.name }}: {{ topping.price }} $
                                 {% endfor %}
                               </p>
+                            {% endif %}
                       </div>
                       <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                         <form method="post" action="{% url 'delivery:order-increment' pk=pizza.id %}">
@@ -46,7 +48,13 @@
                       <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                         <h5 class="mb-0">{{ pizza.price_with_toppings }} $</h5>
                       </div>
-                      <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                      <div style="margin-right: 10px" class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <form class="form-inline" method="post" action="{% url 'delivery:choose-topping' pk=pizza.id %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                          <button  type="submit" class="btn btn-primary">Add topping</button>
+                        </form>
+                        <br>
                         <form action="{% url 'delivery:order-delete' pizza_id=pizza.id order_id=order.id %}" method="post">
                           {% csrf_token %}
                           <input type="hidden" name="pizza_id" id="pizza_id" value="{{pizza.id}}">

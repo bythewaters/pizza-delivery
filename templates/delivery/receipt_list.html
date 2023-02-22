@@ -31,22 +31,27 @@
                             <th class="text-right">TOTAL</th>
                         </tr>
                     </thead>
-                    <tbody>
                       {% for pizza in order.customer_order.pizza.all %}
-                            <tr>
-                                <td class="no">{{ pizza.id }}</td>
-                                <td class="text-left"><h3>
-                                  {{ pizza.name }}
-                                </h3>
-                                 {% for topping in pizza.topping.all %}
-                                    <p>{{ topping.name }}: {{ topping.price }} $</p>
-                                  {% endfor %}
-                                </td>
-                                <td class="unit">{{ pizza.price }} $</td>
+                        <tbody>
+                          <tr>
+                              <td class="no">{{ pizza.id }}</td>
+                              <td class="text-left"><h3>
+                                {{ pizza.name }}
+                              </h3>
+                               {% for topping in pizza.topping.all %}
+                                  <p>{{ topping.name }}: {{ topping.price }} $</p>
+                                {% endfor %}
+                              </td>
+                              <td class="unit">{{ pizza.price }} $</td>
+                              {% if pizza.topping.all %}
                                 <td class="qty">{{ topping_total_price }} $</td>
-                                <td class="unit">{{ pizza.quantity }}</td>
-                                <td class="total">{{ pizza.price_with_toppings }} $</td>
-                            </tr>
+                              {% else %}
+                                <td class="qty">{{ 0 }} $</td>
+                              {% endif %}
+                              <td class="unit">{{ pizza.quantity }}</td>
+                              <td class="total">{{ pizza.price_with_toppings }} $</td>
+                          </tr>
+                        </tbody>
                       {% endfor %}
                     <tfoot>
                         <tr>
@@ -82,7 +87,7 @@
                     </div>
                   </div>
                 </div>
-            </main>
+              </main>
           {% endfor %}
         </div>
         <div></div>

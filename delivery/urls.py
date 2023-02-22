@@ -15,15 +15,14 @@ from delivery.views import (
     PizzaCreateView,
     PizzaDeleteView,
     OrderListView,
-    AddToNewOrderView,
+    OrderAddPizzaView,
     OrderDeleteView,
     IncrementQuantityView,
     DecrementQuantityView,
-    AddToToppingOrderView,
     FeedBackListView,
     create_receipt,
     ReceiptListView,
-    clean_order,
+    clean_order, ChooseToppingView, add_toppings,
 )
 
 urlpatterns = [
@@ -92,14 +91,10 @@ urlpatterns = [
     ),
     path(
         "order/add-pizza/<int:pizza_id>/",
-        AddToNewOrderView.as_view(),
+        OrderAddPizzaView.as_view(),
         name="order-add-pizza",
     ),
-    path(
-        "order/add-topping/<int:topping_id>/",
-        AddToToppingOrderView.as_view(),
-        name="order-add-topping",
-    ),
+
     path(
         "order-delete/<int:order_id>/<int:pizza_id>/",
         OrderDeleteView.as_view(),
@@ -119,6 +114,7 @@ urlpatterns = [
     path("create-receipt/", create_receipt, name="receipt-create"),
     path("receipt/", ReceiptListView.as_view(), name="receipt-list"),
     path("clean-order/<int:pk>/", clean_order, name="clean-order"),
+    path("menu/add_toppings/<int:pizza_id>/", add_toppings, name="choose-topping"),
 ]
 
 app_name = "delivery"

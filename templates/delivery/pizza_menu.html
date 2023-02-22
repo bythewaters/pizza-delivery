@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load crispy_forms_filters %}
 
 
 {% block content %}
@@ -59,10 +58,15 @@
                 <p class="price">
                   {{ pizza.price }}$
                 </p>
-                <form method="post" action="{% url 'delivery:order-add-pizza' pizza.id %} ">
+                <form class="form-inline" method="post" action="{% url 'delivery:order-add-pizza' pizza.id %} ">
                   {% csrf_token %}
                   <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
                   <button type="submit" class="btn btn-primary">Add to order</button>
+                </form>
+                <form method="post" action="{% url 'delivery:choose-topping' pizza.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                  <button type="submit" class="btn btn-primary">Add topping</button>
                 </form>
               </div>
             {% endfor %}

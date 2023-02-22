@@ -12,7 +12,7 @@ from delivery.forms import (
     CustomerInfoUpdateForm,
     RegisterForm,
     ToppingSearchForm,
-    FeedBackCreateForm,
+    FeedBackCreateForm, ToppingForm,
 )
 from delivery.models import (
     Pizza,
@@ -105,7 +105,7 @@ class PizzaCreateView(
 ):
     permission_required = "delivery.add_pizza"
     model = Pizza
-    fields = "__all__"
+    fields = ["name", "type_pizza", "price", "ingredients"]
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_update_create_form.html"
 
@@ -117,7 +117,7 @@ class PizzaUpdateView(
 ):
     permission_required = "delivery.change_pizza"
     model = Pizza
-    fields = "__all__"
+    fields = ["name", "type_pizza", "price", "ingredients"]
     success_url = reverse_lazy("delivery:pizza-menu-list")
     template_name = "delivery/pizza_update_create_form.html"
 
@@ -212,7 +212,7 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class AddToNewOrderView(LoginRequiredMixin, View):
+class OrderAddPizzaView(LoginRequiredMixin, View):
     @staticmethod
     def post(request, pizza_id):
         pizza = Pizza.objects.get(id=pizza_id)
@@ -258,16 +258,6 @@ class DecrementQuantityView(LoginRequiredMixin, View):
             pizza.quantity -= 1
             pizza.save()
         return redirect("delivery:order-list")
-
-
-class AddToToppingOrderView(LoginRequiredMixin, View):
-    @staticmethod
-    def post(request, topping_id):
-        topping_id = Topping.objects.get(id=topping_id)
-        customer = request.user
-        order = Order.objects.create(customer=customer)
-        order.pizza.add(topping_id.topping.name)
-        return redirect("delivery:pizza-menu-list")
 
 
 class FeedBackListView(LoginRequiredMixin, generic.ListView):
@@ -337,3 +327,28 @@ def clean_order(request, pk):
     order.delete()
 
     return redirect(reverse_lazy("delivery:index"))
+
+
+class ChooseToppingView(
+    LoginRequiredMixin,
+    generic.UpdateView
+):
+    model = Pizza
+    fields = ["topping", ]
+    success_url = reverse_lazy("delivery:order-add-pizza")
+    template_name = "delivery/choose_toppings.html"
+
+
+def add_toppings(request, pizza_id):
+    pizza = Pizza.objects.get(id=pizza_id)
+    if request.method == 'POST':
+        form = ToppingForm(request.POST)
+        if form.is_valid():
+            topping = form.save()
+            pizza.topping.add(topping)
+            pizza.price_with_toppings += topping.price
+            pizza.save()
+            return redirect('add_pizza_to_order', pizza_id)
+    else:
+        form = ToppingForm()
+    return render(request, 'delivery/choose_toppings.html', {'form': form, 'pizza': pizza})

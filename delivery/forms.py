@@ -1,6 +1,7 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from delivery.models import Customer, FeedBack, Topping
+from delivery.models import Customer, FeedBack, Topping, Pizza
 
 
 class CustomerInfoUpdateForm(forms.ModelForm):
@@ -36,8 +37,8 @@ class FeedBackCreateForm(forms.ModelForm):
         fields = ["comment"]
 
 
-class ToppingForm(forms.ModelForm):
+class PizzaForm(forms.ModelForm):
     class Meta:
-        model = Topping
-        fields = ['name', 'price']
+        model = Pizza
+        fields = ("topping",)
 

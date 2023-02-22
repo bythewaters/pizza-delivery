@@ -37,38 +37,35 @@
 
           <div class="row gy-5">
             {% for pizza in pizza_menu %}
-              <div class="col-lg-4 menu-item">
-                <img src="{% static '/assets/img/pizzas/'|add:pizza.name|add:'.png' %}" class="menu-img img-fluid" alt="">
-                <h4 style="text-align: center">{{ pizza.name }}
-                  {% if perms.delivery.change_pizza %}
-                    <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
-                  {% endif %}
-                  {% if perms.delivery.delete_pizza %}
-                    <a style="text-decoration: none"  href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
-                      ❌
-                    </a>
-                  {% endif %}
-                </h4>
-                <p style="text-align: center" class="ingredients">
-                  {% for ingredients in pizza.topping.all %}
-                    {{ ingredients.name }},
-                  {% endfor %}
-                  {{ pizza.ingredients }}
-                </p>
-                <p class="price">
-                  {{ pizza.price }}$
-                </p>
-                <form class="form-inline" method="post" action="{% url 'delivery:order-add-pizza' pizza.id %} ">
-                  {% csrf_token %}
-                  <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
-                  <button type="submit" class="btn btn-primary">Add to order</button>
-                </form>
-                <form method="post" action="{% url 'delivery:choose-topping' pizza.id %}">
-                  {% csrf_token %}
-                  <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
-                  <button type="submit" class="btn btn-primary">Add topping</button>
-                </form>
-              </div>
+              {% if pizza.is_custom_pizza == False %}
+                <div class="col-lg-4 menu-item">
+                  <img src="{% static '/assets/img/pizzas/'|add:pizza.name|add:'.png' %}" class="menu-img img-fluid" alt="">
+                  <h4 style="text-align: center">{{ pizza.name }}
+                    {% if perms.delivery.change_pizza %}
+                      <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
+                    {% endif %}
+                    {% if perms.delivery.delete_pizza %}
+                      <a style="text-decoration: none"  href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
+                        ❌
+                      </a>
+                    {% endif %}
+                  </h4>
+                  <p style="text-align: center" class="ingredients">
+                    {% for ingredients in pizza.topping.all %}
+                      {{ ingredients.name }},
+                    {% endfor %}
+                    {{ pizza.ingredients }}
+                  </p>
+                  <p class="price">
+                    {{ pizza.price }}$
+                  </p>
+                  <form method="post" action="{% url 'delivery:order-add-pizza' pizza.id %} ">
+                    {% csrf_token %}
+                    <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                    <button type="submit" class="btn btn-primary">Add to order</button>
+                  </form>
+                </div>
+              {% endif %}
             {% endfor %}
             </div>
           </div>

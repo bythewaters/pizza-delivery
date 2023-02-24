@@ -1,7 +1,14 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from delivery.models import FeedBack, PizzaType, Topping, Pizza, Order, Receipt
+from delivery.models import (
+    FeedBack,
+    PizzaType,
+    Topping,
+    Pizza,
+    Order,
+    Receipt
+)
 
 
 class CustomerModelTest(TestCase):
@@ -112,5 +119,7 @@ class ReceiptModelTest(TestCase):
 
     def test_receipt_str(self) -> None:
         self.assertEqual(
-            str(self.receipt), f"Receipt #{self.receipt.pk} ({self.receipt.order_time})"
+            str(self.receipt),
+            f"Receipt #{self.receipt.pk} "
+            f"({self.receipt.order_time})"
         )

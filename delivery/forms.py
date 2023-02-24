@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from delivery.models import Customer, FeedBack, Topping, Pizza
 
@@ -38,7 +37,12 @@ class FeedBackCreateForm(forms.ModelForm):
 
 
 class PizzaForm(forms.ModelForm):
+    topping = forms.ModelMultipleChoiceField(
+        queryset=Topping.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        error_messages={"required": ""},
+    )
+
     class Meta:
         model = Pizza
         fields = ("topping",)
-

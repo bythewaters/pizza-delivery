@@ -13,7 +13,7 @@ class RegisterFormTest(TestCase):
             "password2": "Ab457363234",
             "first_name": "TestUser",
             "last_name": "UserTest",
-            "phone_number": "1243235",
+            "phone_number": "+380752051423",
             "address": "test,2,3",
             "email": "test@gmail.com",
         }

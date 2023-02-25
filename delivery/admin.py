@@ -2,14 +2,13 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-
 from delivery.models import (
     Customer,
     FeedBack,
     Topping,
     Pizza,
     PizzaType,
-    Order
+    Order, Receipt
 )
 
 
@@ -65,4 +64,5 @@ class OrderAdmin(ModelAdmin):
     list_display = ("customer", "status")
 
 
+admin.site.register(Receipt)
 admin.site.unregister(Group)

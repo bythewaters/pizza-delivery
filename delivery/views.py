@@ -69,11 +69,11 @@ class RegisterView(generic.CreateView):
 
     def form_valid(self, form):
         form.save()
-        user = authenticate(
+        customer = authenticate(
             username=form.cleaned_data["username"],
             password=form.cleaned_data["password1"],
         )
-        login(self.request, user)
+        login(self.request, customer)
         return HttpResponseRedirect(reverse("delivery:index"))
 
 
@@ -285,7 +285,7 @@ class DecrementQuantityView(LoginRequiredMixin, View):
         return redirect("delivery:order-list")
 
 
-class FeedBackListView(LoginRequiredMixin, generic.ListView):
+class FeedBackListView(generic.ListView):
     model = FeedBack
     queryset = FeedBack.objects.select_related(
         "customer"

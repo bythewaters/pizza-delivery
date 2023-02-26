@@ -13,10 +13,10 @@ class Customer(AbstractUser):
         verbose_name = "customer"
         ordering = ["username"]
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("delivery:customer-detail", kwargs={"pk": self.pk})
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"{self.first_name} "
             f"{self.last_name} "
@@ -42,7 +42,7 @@ class FeedBack(models.Model):
 class PizzaType(models.Model):
     type = models.CharField(max_length=63)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.type}"
 
 
@@ -53,7 +53,7 @@ class Topping(models.Model):
     class Meta:
         ordering = ["price"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}: {self.price}"
 
 
@@ -74,7 +74,7 @@ class Pizza(models.Model):
     class Meta:
         ordering = ["name"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}: {self.price}"
 
 
@@ -85,7 +85,7 @@ class Order(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.pizza.name}"
 
 
@@ -93,5 +93,5 @@ class Receipt(models.Model):
     customer_order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_time = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Receipt #{self.pk} ({self.order_time})"

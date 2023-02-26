@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
+from django.db.models import QuerySet
 
 from delivery.forms import (
     CustomerInfoUpdateForm,
@@ -26,7 +27,7 @@ from delivery.models import (
 )
 
 
-def index(request):
+def index(request) -> str:
     pizza_count = Pizza.objects.count()
     topping_count = Topping.objects.count()
     feedback_count = FeedBack.objects.count()
@@ -42,7 +43,7 @@ def index(request):
     return render(request, "delivery/home.html", context=context)
 
 
-def about(request):
+def about(request) -> str:
     return render(request, "delivery/about_delivery.html")
 
 
@@ -56,7 +57,7 @@ class CustomerUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = CustomerInfoUpdateForm
     template_name = "delivery/customer_update_form.html"
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> str:
         valid_form = form.save(commit=False)
         valid_form.save()
         return redirect("delivery:customer-detail", self.object.pk)
@@ -67,7 +68,7 @@ class RegisterView(generic.CreateView):
     form_class = RegisterForm
     template_name = "delivery/customer_register_form.html"
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponseRedirect:
         form.save()
         customer = authenticate(
             username=form.cleaned_data["username"],
@@ -85,12 +86,12 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
     template_name = "delivery/pizza_menu.html"
     context_object_name = "pizza_menu"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super(PizzaMenuListView, self).get_context_data(**kwargs)
         context["pizza_type"] = PizzaType.objects.all()
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         queryset = super().get_queryset()
         try:
             search_term = self.kwargs["type_id"]
@@ -143,7 +144,7 @@ class ToppingListView(LoginRequiredMixin, generic.ListView):
     queryset = Topping.objects.all()
     paginate_by = 6
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(ToppingListView, self).get_context_data(**kwargs)
         topping = self.request.GET.get("topping", "")
         context["topping_form"] = ToppingSearchForm(
@@ -151,7 +152,7 @@ class ToppingListView(LoginRequiredMixin, generic.ListView):
         )
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         form = ToppingSearchForm(self.request.GET)
 
         if form.is_valid():
@@ -196,12 +197,12 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
     template_name = "delivery/order_list.html"
     context_object_name = "orders"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Order.objects.select_related(
             "customer"
         ).filter(customer=self.request.user)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(OrderListView, self).get_context_data(**kwargs)
         orders = self.get_queryset().prefetch_related("pizza")
         total_price = 0
@@ -221,7 +222,7 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
 
 class OrderAddPizzaView(LoginRequiredMixin, View):
     @staticmethod
-    def post(request, pizza_id):
+    def post(request, pizza_id) -> str:
         pizza = Pizza.objects.get(id=pizza_id)
         customer = request.user
         try:
@@ -249,7 +250,7 @@ class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("delivery:order-list")
     template_name = "delivery/order_list.html"
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> str:
         pizza = Pizza.objects.get(id=kwargs.get("pizza_id"))
         order = Order.objects.get(id=kwargs.get("order_id"))
         order.pizza.remove(kwargs.get("pizza_id"))
@@ -268,7 +269,7 @@ class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class IncrementQuantityView(LoginRequiredMixin, View):
     @staticmethod
-    def post(request, pk):
+    def post(request, pk) -> str:
         pizza = Pizza.objects.get(id=pk)
         pizza.quantity += 1
         pizza.save()
@@ -277,7 +278,7 @@ class IncrementQuantityView(LoginRequiredMixin, View):
 
 class DecrementQuantityView(LoginRequiredMixin, View):
     @staticmethod
-    def post(request, pk):
+    def post(request, pk) -> str:
         pizza = Pizza.objects.get(id=pk)
         if pizza.quantity > 1:
             pizza.quantity -= 1
@@ -293,7 +294,7 @@ class FeedBackListView(generic.ListView):
     template_name = "delivery/feedback.html"
     paginate_by = 3
 
-    def post(self, request):
+    def post(self, request) -> str:
         form = FeedBackCreateForm(request.POST)
         if form.is_valid():
             feedback = form.save(commit=False)
@@ -302,7 +303,7 @@ class FeedBackListView(generic.ListView):
         return redirect("delivery:feedback-list")
 
 
-def create_receipt(request):
+def create_receipt(request) -> str:
     order = Order.objects.filter(
         customer=request.user, status=False
     ).first()
@@ -323,12 +324,12 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
     template_name = "delivery/receipt_list.html"
     context_object_name = "receipt_order"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Receipt.objects.filter(
             customer_order__customer=self.request.user
         ).order_by("-order_time")
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(ReceiptListView, self).get_context_data(**kwargs)
         order = self.get_queryset().prefetch_related("customer_order__pizza")
         total_price = 0
@@ -348,7 +349,7 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-def clean_order(request, pk):
+def clean_order(request, pk) -> str:
     order = Order.objects.get(id=pk)
     for pizza in order.pizza.all():
         try:

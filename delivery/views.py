@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin
 )
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
@@ -27,7 +27,7 @@ from delivery.models import (
 )
 
 
-def index(request) -> str:
+def index(request) -> HttpResponse:
     pizza_count = Pizza.objects.count()
     topping_count = Topping.objects.count()
     feedback_count = FeedBack.objects.count()
@@ -43,7 +43,7 @@ def index(request) -> str:
     return render(request, "delivery/home.html", context=context)
 
 
-def about(request) -> str:
+def about(request) -> HttpResponse:
     return render(request, "delivery/about_delivery.html")
 
 
@@ -93,10 +93,7 @@ class PizzaMenuListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self) -> QuerySet:
         queryset = super().get_queryset()
-        try:
-            search_term = self.kwargs["type_id"]
-        except KeyError:
-            return queryset
+        search_term = self.kwargs.get("type_id")
         if search_term is not None:
             queryset = queryset.filter(type_pizza=search_term)
         return queryset
@@ -192,7 +189,29 @@ class ToppingDeleteView(
     template_name = "delivery/topping_delete_form.html"
 
 
-class OrderListView(LoginRequiredMixin, generic.ListView):
+class TotalPriceMixin:
+    @staticmethod
+    def get_total_price(orders: QuerySet) -> tuple:
+        total_price = 0
+        topping_total_price = 0
+        for order in orders:
+            if hasattr(order, "customer_order"):
+                pizzas = order.customer_order.pizza.all()
+            else:
+                pizzas = order.pizza.all()
+            for pizza in pizzas:
+                total_price += pizza.price * pizza.quantity
+                pizza.price_with_toppings = pizza.price * pizza.quantity
+                pizza.save()
+                if pizza.topping.all:
+                    for topping in pizza.topping.all():
+                        pizza.price_with_toppings += topping.price
+                        total_price += topping.price
+                        pizza.save()
+        return total_price, topping_total_price
+
+
+class OrderListView(TotalPriceMixin, LoginRequiredMixin, generic.ListView):
     model = Order
     template_name = "delivery/order_list.html"
     context_object_name = "orders"
@@ -204,19 +223,9 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(OrderListView, self).get_context_data(**kwargs)
-        orders = self.get_queryset().prefetch_related("pizza")
-        total_price = 0
-        for order in orders:
-            for pizza in order.pizza.all():
-                total_price += pizza.price * pizza.quantity
-                pizza.price_with_toppings = pizza.price * pizza.quantity
-                pizza.save()
-                if pizza.topping.all:
-                    for topping in pizza.topping.all():
-                        pizza.price_with_toppings += topping.price
-                        total_price += topping.price
-                        pizza.save()
-        context["total_price"] = total_price
+        orders = self.get_queryset().prefetch_related("pizza__topping")
+        total = self.get_total_price(orders)
+        context["total_price"] = total[0]
         return context
 
 
@@ -225,10 +234,7 @@ class OrderAddPizzaView(LoginRequiredMixin, View):
     def post(request, pizza_id) -> str:
         pizza = Pizza.objects.get(id=pizza_id)
         customer = request.user
-        try:
-            order = Order.objects.get(customer=customer)
-        except Order.DoesNotExist:
-            order = Order.objects.create(customer=customer)
+        order = Order.objects.get_or_create(customer=customer)
 
         new_pizza = Pizza.objects.create(
             name=pizza.name,
@@ -240,7 +246,7 @@ class OrderAddPizzaView(LoginRequiredMixin, View):
             is_custom_pizza=True
         )
 
-        order.pizza.add(new_pizza)
+        order[0].pizza.add(new_pizza)
 
         return redirect("delivery:pizza-menu-list")
 
@@ -314,7 +320,7 @@ def create_receipt(request) -> str:
     return redirect("delivery:receipt-list")
 
 
-class ReceiptListView(LoginRequiredMixin, generic.ListView):
+class ReceiptListView(TotalPriceMixin, LoginRequiredMixin, generic.ListView):
     model = Receipt
     receipt = Receipt.objects.select_related(
         "customer_order"
@@ -331,21 +337,10 @@ class ReceiptListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(ReceiptListView, self).get_context_data(**kwargs)
-        order = self.get_queryset().prefetch_related("customer_order__pizza")
-        total_price = 0
-        topping_total_price = 0
-        for order in order:
-            for pizza in order.customer_order.pizza.all():
-                total_price += pizza.price * pizza.quantity
-                pizza.price_with_toppings = pizza.price * pizza.quantity
-                pizza.save()
-                for topping in pizza.topping.all():
-                    pizza.price_with_toppings += topping.price
-                    topping_total_price += topping.price
-                    total_price += topping.price
-                    pizza.save()
-        context["total_price"] = total_price
-        context["topping_total_price"] = topping_total_price
+        orders = self.get_queryset().prefetch_related("customer_order__pizza__topping")
+        total = self.get_total_price(orders)
+        context["total_price"] = total[0]
+        context["topping_total_price"] = total[1]
         return context
 
 

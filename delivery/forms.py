@@ -56,7 +56,7 @@ class PizzaForm(forms.ModelForm):
         fields = ("topping",)
 
 
-def validate_phone_number(phone_number) -> str:
+def validate_phone_number(phone_number: str) -> str:
     if phone_number[:4] != "+380":
         raise ValidationError("Phone number must start with code +380")
     if len(phone_number) != 13:

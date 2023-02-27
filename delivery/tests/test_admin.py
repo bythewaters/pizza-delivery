@@ -58,12 +58,10 @@ class DeliveryAdminTests(TestCase):
         pizza = Pizza.objects.create(
             name="Test Pizza", type_pizza=pizza_type, price="12.99"
         )
-        pizza.topping.add(
-            *[
-                Topping.objects.create(name=f"Topping {i}",
-                                       price=i) for i in range(3)
-            ]
-        )
+        toppings = [
+            Topping.objects.create(name=f"Topping {i}", price=i) for i in range(3)
+        ]
+        pizza.topping.set(toppings)
         response = self.client.get(
             reverse("admin:delivery_pizza_change", args=(pizza.id,))
         )

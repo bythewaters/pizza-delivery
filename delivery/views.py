@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin
 )
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
 from django.db.models import QuerySet
@@ -234,7 +234,7 @@ class OrderAddPizzaView(LoginRequiredMixin, View):
     def post(request, pizza_id) -> str:
         pizza = Pizza.objects.get(id=pizza_id)
         customer = request.user
-        order = Order.objects.get_or_create(customer=customer)
+        order, _ = Order.objects.get_or_create(customer=customer)
 
         new_pizza = Pizza.objects.create(
             name=pizza.name,
@@ -246,7 +246,7 @@ class OrderAddPizzaView(LoginRequiredMixin, View):
             is_custom_pizza=True
         )
 
-        order[0].pizza.add(new_pizza)
+        order.pizza.add(new_pizza)
 
         return redirect("delivery:pizza-menu-list")
 
@@ -330,8 +330,8 @@ class ReceiptListView(TotalPriceMixin, LoginRequiredMixin, generic.ListView):
     template_name = "delivery/receipt_list.html"
     context_object_name = "receipt_order"
 
-    def get_pizzas(self, order: Receipt) -> QuerySet:
-        return order.customer_order.pizza.all()
+    def get_pizzas(self, receipt: Receipt) -> QuerySet:
+        return receipt.customer_order.pizza.all()
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(ReceiptListView, self).get_context_data(**kwargs)
@@ -342,16 +342,11 @@ class ReceiptListView(TotalPriceMixin, LoginRequiredMixin, generic.ListView):
         return context
 
 
-def clean_order(request, pk) -> str:
-    order = Order.objects.get(id=pk)
+def clean_order(request, pk):
+    order = get_object_or_404(Order, id=pk)
     for pizza in order.pizza.all():
-        try:
-            pizza_to_delete = Pizza.objects.get(id=pizza.id)
-            pizza_to_delete.delete()
-        except Pizza.DoesNotExist:
-            pass
-        except Pizza.MultipleObjectsReturned:
-            pass
+        pizza_to_delete = Pizza.objects.get(id=pizza.id)
+        pizza_to_delete.delete()
     order.delete()
     return redirect(reverse_lazy("delivery:index"))
 

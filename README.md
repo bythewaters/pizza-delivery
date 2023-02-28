@@ -1,6 +1,6 @@
 # Secure pizza delivery
 
-## Tagline: "Freshly Baked Pizzas, Delivered Safely to Your Doorstep!"
+## "Freshly Baked Pizzas, Delivered Safely to Your Doorstep!"
 
 Welcome to our pizza delivery project! We offer a wide variety of delicious and freshly baked pizzas that can be delivered safely to your doorstep. Our platform provides a quick and easy ordering process, customizable toppings, fast delivery, and secure payment options.
 
@@ -22,13 +22,24 @@ Thank you for choosing our pizza delivery service. We hope you enjoy your pizza!
 
 ```shell
 git clone https://github.com/bythewaters/pizza-delivery.git
-cd library-mate
+cd delivery_pizza
 python3 -m venv venv 
 source venv/bin/activate 
 pip install -r requirements.txt
+python manage.py migrate
 python manage.py runserver
 ```
 
+- Use the following command to load prepared data from fixture to test and debug your code:
+  `python manage.py loaddata data_delivery_pizza.json`.
+- After loading data from fixture you can use following superuser (or create another one by yourself):
+  - Login: `Admin1849`
+  - Password: `1qazcde3`
+  - For create superuser, use command:
+    `python manage.py createsuperuser`.
+- You can also log in as a normal user and check access to functions CRUD:
+  - Login: `TestUser`
+  - Password: `pizzauser123`
 ### Db structure
 
 ![Db structure project](db_structure.png)

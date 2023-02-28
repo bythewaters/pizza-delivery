@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -190,16 +192,15 @@ class ToppingDeleteView(
 
 
 class TotalPriceMixin:
-    @staticmethod
-    def get_total_price(orders: QuerySet) -> tuple:
+    @abstractmethod
+    def get_pizzas(self, order: Order) -> QuerySet:
+        pass
+
+    def get_total_price(self, orders: QuerySet) -> tuple:
         total_price = 0
         topping_total_price = 0
         for order in orders:
-            if hasattr(order, "customer_order"):
-                pizzas = order.customer_order.pizza.all()
-            else:
-                pizzas = order.pizza.all()
-            for pizza in pizzas:
+            for pizza in self.get_pizzas(order):
                 total_price += pizza.price * pizza.quantity
                 pizza.price_with_toppings = pizza.price * pizza.quantity
                 pizza.save()
@@ -217,10 +218,8 @@ class OrderListView(TotalPriceMixin, LoginRequiredMixin, generic.ListView):
     template_name = "delivery/order_list.html"
     context_object_name = "orders"
 
-    def get_queryset(self) -> QuerySet:
-        return Order.objects.select_related(
-            "customer"
-        ).filter(customer=self.request.user)
+    def get_pizzas(self, order: Order) -> QuerySet:
+        return order.pizza.all()
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(OrderListView, self).get_context_data(**kwargs)
@@ -331,10 +330,8 @@ class ReceiptListView(TotalPriceMixin, LoginRequiredMixin, generic.ListView):
     template_name = "delivery/receipt_list.html"
     context_object_name = "receipt_order"
 
-    def get_queryset(self) -> QuerySet:
-        return Receipt.objects.filter(
-            customer_order__customer=self.request.user
-        ).order_by("-order_time")
+    def get_pizzas(self, order: Receipt) -> QuerySet:
+        return order.customer_order.pizza.all()
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
         context = super(ReceiptListView, self).get_context_data(**kwargs)

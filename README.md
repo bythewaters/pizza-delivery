@@ -33,8 +33,8 @@ python manage.py runserver
 - Use the following command to load prepared data from fixture to test and debug your code:
   `python manage.py loaddata data_delivery_pizza.json`.
 - After loading data from fixture you can use following superuser (or create another one by yourself):
-  - Login: `Admin1849`
-  - Password: `1qazcde3`
+  - Login: `AdminPizza`
+  - Password: `Admin1849`
   - For create superuser, use command:
     `python manage.py createsuperuser`.
 - You can also log in as a normal user and check access to functions CRUD:

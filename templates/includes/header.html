@@ -1,0 +1,44 @@
+{% load static %}
+
+{% block header %}
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <a  style="text-decoration: none" href="/" class="logo d-flex align-items-center me-auto me-lg-0">
+        <img src="{% static 'assets/img/favicon2.png' %}" alt="">
+        <h1>Secure Pizza<span>.</span></h1>
+      </a>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="{% url 'delivery:index' %}">Home</a></li>
+          <li><a href="{% url 'delivery:about' %}">About</a></li>
+          <li><a href="{% url 'delivery:pizza-menu-list' %}">Menu</a></li>
+          <li><a href="{% url 'delivery:topping-list' %}">Topping</a></li>
+          <li><a href="{% url 'delivery:feedback-list' %}">Feedback</a></li>
+          <li><a href="{% url 'delivery:order-list' %}">
+            <img src="{% static 'assets/img/Cart.png' %}" width="25" height="25">
+          </a>
+          </li>
+        </ul>
+
+      </nav>
+      {% if not user.is_authenticated %}
+        <div>
+          <a style="text-decoration: none" class="btn-book-a-table" href="{% url 'delivery:customer-register' %}">Register</a>
+          <a style="text-decoration: none" class="btn-book-a-table" href="{% url 'login' %}">Login</a>
+        </div>
+        <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+        <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      {% else %}
+        <div>
+          <a style="text-decoration: none" class="btn-book-a-table" href="{{ user.get_absolute_url }}">Welcome, {{ user.username }}</a>
+          <a style="text-decoration: none" class="btn-book-a-table" href="{% url 'logout' %}">Logout</a>
+        </div>
+        <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+        <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+      {% endif %}
+
+    </div>
+  </header>
+{% endblock %}

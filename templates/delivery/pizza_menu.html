@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+    <section id="menu" class="menu">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header" style="">
+          <p>
+            Check Our <span>Pizza Menu</span>
+          </p>
+          <p>
+            {% if perms.delivery.add_pizza %}
+              <a style="text-decoration: none; margin-left: 1100px" href="{% url 'delivery:pizza-create' %}">
+                Add new Pizza
+              </a>
+            {% endif %}
+          </p>
+        </div>
+
+            <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+              {% for type in pizza_type %}
+                <li class="nav-item">
+                  <a class="nav-link active show" href="{% url 'delivery:pizza-menu-type-list' type_id=type.id %}">
+                    <h4>{{ type.type }}</h4>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="300">
+          <div class="tab-pane fade active show">
+                <div class="tab-header text-center">
+                  <h3>Choose your pizza</h3>
+                </div>
+
+          <div class="row gy-5">
+            {% for pizza in pizza_menu %}
+              {% if pizza.is_custom_pizza == False %}
+                <div class="col-lg-4 menu-item">
+                  <img src="{% static '/assets/img/pizzas/'|add:pizza.name|add:'.png' %}" class="menu-img img-fluid" alt="">
+                  <h4 style="text-align: center">{{ pizza.name }}
+                    {% if perms.delivery.change_pizza %}
+                      <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>
+                    {% endif %}
+                    {% if perms.delivery.delete_pizza %}
+                      <a style="text-decoration: none"  href="{% url 'delivery:pizza-delete' pk=pizza.id %}">
+                        ❌
+                      </a>
+                    {% endif %}
+                  </h4>
+                  <p style="text-align: center" class="ingredients">
+                    {% for ingredients in pizza.topping.all %}
+                      {{ ingredients.name }},
+                    {% endfor %}
+                    {{ pizza.ingredients }}
+                  </p>
+                  <p class="price">
+                    {{ pizza.price }}$
+                  </p>
+                  <form method="post" action="{% url 'delivery:order-add-pizza' pizza.id %} ">
+                    {% csrf_token %}
+                    <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                    <button type="submit" class="btn btn-primary">Add to order</button>
+                  </form>
+                </div>
+              {% endif %}
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}

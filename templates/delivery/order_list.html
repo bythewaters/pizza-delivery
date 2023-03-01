@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <section class="h-100" style="background-color: #eee;">
+    <div class="container h-100 py-5" data-aos="fade-up">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-10">
+        {% if total_price %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="fw-normal mb-0 text-black">Pizza List</h3>
+            </div>
+          {% for order in orders %}
+            {% for pizza in order.pizza.all %}
+              <div class="card rounded-3 mb-4">
+                <div class="card-body p-4">
+                  <div class="row d-flex justify-content-between align-items-center">
+                      <div class="col-md-2 col-lg-2 col-xl-2">
+                        <img
+                          src="{% static 'assets/img/pizzas/'|add:pizza.name|add:".png" %}"
+                          class="img-fluid rounded-3" alt="Cotton T-shirt">
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-3">
+                        <p class="lead fw-normal mb-2">{{ pizza.name}}</p>
+                            <p><span class="text-muted">Ingredients: </span> {{ pizza.ingredients }} </p>
+                            {% if pizza.topping.all %}
+                              <p>
+                                <span class="text-muted">Toppings: </span>
+                                {% for topping in pizza.topping.all %}
+                                    {{ topping.name }}: {{ topping.price }} $
+                                {% endfor %}
+                              </p>
+                            {% endif %}
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                        <form method="post" action="{% url 'delivery:order-increment' pk=pizza.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                            <button type="submit" class="quantity-right-plus btn btn-success btn-number">+</button>
+                        </form>
+                        <p style="padding-left: 10px; padding-right: 10px;" class="lead fw-normal mb-2" >{{ pizza.quantity }}</p>
+                        <form method="post" action="{% url 'delivery:order-decrement' pk=pizza.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                            <button type="submit" class="quantity-left-minus btn btn-danger btn-number" >-</button>
+                        </form>
+                      </div>
+                      <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                        <h5 class="mb-0">{{ pizza.price_with_toppings }} $</h5>
+                      </div>
+                      <div style="margin-right: 10px" class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <form class="form-inline" method="post" action="{% url 'delivery:choose-topping' pk=pizza.id %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="pizza_id" value="{{ pizza.id }}">
+                          <button  type="submit" class="btn btn-primary">Add topping</button>
+                        </form>
+                        <br>
+                        <form action="{% url 'delivery:order-delete' pizza_id=pizza.id order_id=order.id %}" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="pizza_id" id="pizza_id" value="{{pizza.id}}">
+                          <button type="submit" class="quantity-left-minus btn btn-danger btn-number">Delete</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+           {% endfor %}
+            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1; card">
+                <div class="card-body" >
+                  <h5 class="mb-0">Total price: {{ total_price }} $</h5>
+                </div>
+              </div>
+              <br>
+              <div class="card">
+                <div class="card-body">
+                  <a href="{% url 'delivery:receipt-create' %}">
+                    <button type="button" class="btn btn-warning btn-block btn-lg">Order now!</button>
+                  </a>
+                </div>
+              </div>
+            {% else %}
+               <section class="h-100" style="background-color: #eee;">
+                <div class="container h-100 py-5 ">
+                  <div class="row d-flex justify-content-center align-items-center h-100 ">
+                      <div class="d-flex justify-content-between align-items-center mb-4 ">
+                        <h3 style="margin-left: 310px" class="fw-normal mb-0 text-black">
+                          Your cart is empty!
+                          Order pizza:)
+                        </h3>
+                    </div>
+                  </div>
+                </div>
+               </section>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

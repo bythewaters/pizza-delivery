@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <section id="topping" class="topping">
+      <div class="container" data-aos="fade-up">
+        <div class="section-header">
+          <p>Here you can see all of our <span>Topping</span></p>
+          <p>
+            {% if perms.delivery.add_topping %}
+              <a style="text-decoration: none; margin-left: 1000px" href="{% url 'delivery:topping-create' %}">
+                Add new topping
+              </a>
+            {% endif %}
+          </p>
+        </div>
+        <form style="justify-content: right;" action="" method="get" class="form-inline">
+          {{ topping_form|crispy }}
+          <input type="submit" value="Search" class="btn btn-outline-primary" >
+        </form>
+
+        <br>
+          <div class="row gy-5">
+            {% for topping in topping_list %}
+              <div class="col-lg-4 menu-item" style="text-align: center">
+                <img src="{% static 'assets/img/topping/'|add:topping.name|add:'.jpeg' %}" class="menu-img img-fluid" alt="">
+                <h4>
+                  {{ topping.name }}
+                  {% if perms.delivery.change_topping %}
+                  <a style="text-decoration: none" href="{% url 'delivery:topping-update' pk=topping.id %}">🔄</a>
+                  {% endif %}
+                  {% if perms.delivery.add_topping %}
+                  <a style="text-decoration: none" href="{% url 'delivery:topping-delete' pk=topping.id %}">
+                    ❌
+                  </a>
+                  {% endif %}
+                </h4>
+                <h5 class="price">
+                  {{ topping.price }}$
+                </h5>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+    </section>
+{% endblock %}

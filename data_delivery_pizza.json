@@ -1,0 +1,389 @@
+[
+  {
+    "model":  "delivery.pizzatype",
+    "pk": 1,
+    "fields": {
+      "type": "Neapolitan"
+    }
+  },
+  {
+    "model":  "delivery.pizzatype",
+    "pk": 2,
+    "fields": {
+      "type": "Chicago"
+    }
+  },
+  {
+    "model":  "delivery.pizzatype",
+    "pk": 3,
+    "fields": {
+      "type": "Sicilian"
+    }
+  },
+  {
+    "model":  "delivery.pizzatype",
+    "pk": 4,
+    "fields": {
+      "type": "Italian traditional"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 1,
+    "fields": {
+      "name": "Tuscan chicken with spinach",
+      "price": 10.30,
+      "type_pizza": 1,
+      "ingredients": "Lemon garlic sauce, sun-dried tomatoes, applewood-spiced chicken, tomatoes and roasted garlic. Topped with fresh spinach tossed in a lemon vinaigrette."
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 2,
+    "fields": {
+      "name": "Mushroom Swiss",
+      "price": 12.30,
+      "type_pizza": 2,
+      "ingredients": "Cream Sauce, Swiss Cheese, Mushrooms, Cherry Tomato"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 3,
+    "fields": {
+      "name": "Eggplant Parmesan",
+      "price": 12.50,
+      "type_pizza": 3,
+      "ingredients": "Tomato sauce, mozzarella, parmesan, ricotta, and gorgonzola"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 4,
+    "fields": {
+      "name": "Corrida",
+      "price": 13.55,
+      "type_pizza": 4,
+      "ingredients": "Tomato sauce, pepperoni, sausage, bacon, ham, mozzarella"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 5,
+    "fields": {
+      "name": "Margarita",
+      "price": 14.99,
+      "type_pizza": 1,
+      "ingredients": "Basil, parmesan"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 6,
+    "fields": {
+      "name": "Salsiccia e Funghi",
+      "price": 14.99,
+      "type_pizza": 1,
+      "ingredients": "tomato sauce, forest wild mushroom, Italian sausage, fiordilatte mozzarella, wild rocket, EVO oil"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 7,
+    "fields": {
+      "name": "Pepperoni",
+      "price": 14.99,
+      "type_pizza": 3,
+      "ingredients": "Tomato Sauce, Mozzarella Cheese, Pepperoni"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 8,
+    "fields": {
+      "name": "Meat Lovers",
+      "price": 15.50,
+      "type_pizza": 2,
+      "ingredients": "Tomato Sauce, Mozzarella Cheese, Pepperoni, Sausage, Ham"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 9,
+    "fields": {
+      "name": "Bosco",
+      "price": 15.60,
+      "type_pizza": 2,
+      "ingredients": "Tomato sauce, pepperoni, sausage, bacon, ham, mozzarella"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 10,
+    "fields": {
+      "name": "Hawaiian",
+      "price": 15.99,
+      "type_pizza": 1,
+      "ingredients": "Tomato sauce, ham, pineapple, mozzarella"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 11,
+    "fields": {
+      "name": "Veggie",
+      "price": 15.99,
+      "type_pizza": 4,
+      "ingredients": "Tomato Sauce, Mozzarella"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 12,
+    "fields": {
+      "name": "Seafood",
+      "price": 17.99,
+      "type_pizza": 4,
+      "ingredients": "Tomato Sauce, Mozzarella Cheese, Shrimp, Crab Meat, Clams"
+    }
+  },
+  {
+    "model": "delivery.pizza",
+    "pk": 13,
+    "fields": {
+      "name": "Taco",
+      "price": 13.99,
+      "type_pizza": 2,
+      "ingredients": "Tomato Sauce, Cheddar Cheese, Ground Beef, Lettuce, Tomatoes, Sour Cream"
+    }
+  },
+  {"model": "delivery.topping", "pk": 1, "fields": {"name": "Mozzarella", "price": 0.8}},
+  {"model": "delivery.topping", "pk": 2, "fields": {"name": "Salam", "price": 2}},
+  {"model": "delivery.topping", "pk": 3, "fields": {"name": "Pepperoni", "price": 2}},
+  {"model": "delivery.topping", "pk": 4, "fields": {"name": "Sausage", "price": 3}},
+  {"model": "delivery.topping", "pk": 5, "fields": {"name": "Onions", "price": 1}},
+  {"model": "delivery.topping", "pk": 6, "fields": {"name": "Pineapple", "price": 1.5}},
+  {"model": "delivery.topping", "pk": 7, "fields": {"name": "Chicken", "price": 2}},
+  {"model": "delivery.topping", "pk": 8, "fields": {"name": "Bacon", "price": 3}},
+  {"model": "delivery.topping", "pk": 9, "fields": {"name": "Parmezan", "price": 2}},
+  {"model": "delivery.topping", "pk": 10, "fields": {"name": "Cherry tomato", "price": 1}},
+  {"model": "delivery.topping", "pk": 11, "fields": {"name": "Bell Peppers", "price": 2}},
+  {"model": "delivery.topping", "pk": 12, "fields": {"name": "Olives", "price": 1}},
+  {"model": "delivery.topping", "pk": 13, "fields": {"name": "Tomato sauce", "price": 1}},
+  {"model": "delivery.topping", "pk": 14, "fields": {"name": "Creme sauce", "price": 1.3}},
+  {"model": "delivery.topping", "pk": 15, "fields": {"name": "Corn", "price": 1.3}},
+  {
+    "model": "delivery.customer",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$fyJk2S5LeeMoeDGLTlbQzB$tqhNdBQL4YhGalg01xM9o1brZ/Wr1AYoOQWs+a4juxk=",
+      "username": "AdminPizza",
+      "email": "AdminPizza@gmail.com",
+      "first_name": "Admin",
+      "last_name": "Pizza",
+      "is_staff": true,
+      "is_superuser": true,
+      "is_active": true,
+      "date_joined": "2023-04-06T17:17:04Z",
+      "address": "Pizza street, 888/5, NY",
+      "phone_number": "+380992063769",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.customer",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$GXusx6qVBkOtIcfefOucrg$ZVXkt9qdXP45zJelV24j1+ROO/SDC5IoQwg10boJgmk=",
+      "username": "Margaritta",
+      "email": "AdmindertPizza@gmail.com",
+      "first_name": "Viktoriia",
+      "last_name": "Martyniuk",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "date_joined": "2023-04-03T12:17:04Z",
+      "address": "Pizza street, 888/5, NY",
+      "phone_number": "+1987637122",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.customer",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$OvLoKUmbwIiDarR5LVCxAE$/6OccZ52upK3yA4jC+8lUEgZ3bWfo+TStaY1fKIitCs=",
+      "username": "User.pizza1234",
+      "email": "",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "date_joined": "2023-03-08T14:17:04Z",
+      "address": "Pizza street, 888/5, NY",
+      "phone_number": "+38099206376",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.customer",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$LyBT6TmsgGrEy5nEfkonl1$UuRk5u0lUo9a2O5rPlmpO8kZHjlkir/VUcirpA4qUdM=",
+      "username": "Pizza123",
+      "email": "",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "date_joined": "2023-04-08T11:13:04Z",
+      "address": "Pizza street, 888/5, Chicago",
+      "phone_number": "+1987637111",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.customer",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$e6EkKHwsEXes5Fhe5lDoJo$Qf10aUbLd2EMpO6yBC8+cYFBIDJylOdAw08eZNO5x+c=",
+      "username": "PizzaFan2",
+      "email": "janesmith@email.com",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "date_joined": "2023-04-04T14:17:04Z",
+      "address": "456 Park Ave, Anytown USA 12345",
+      "phone_number": "(555) 789-1234",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.customer",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$Y31odxQ5pg4IkrNroTngW0$9sxxUGOSSEy+tiF67QVTaFOOgT/66XgO9tNjyfygcqk=",
+      "username": "PizzaKing3",
+      "email": "bobjohnson@email.com",
+      "first_name": "Bob",
+      "last_name": "Johnson",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "date_joined": "2023-04-08T14:17:04Z",
+      "address": "789 Oak St, Anytown USA 12345",
+      "phone_number": "(555) 111-2222",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.customer",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$IabZMPEZDpFsMcwcfA0DYQ$9KdxlbY3xt15qyImaYEfE8Q1oB8kcXPo+xZc1OF8EVE=",
+      "username": "TestUser",
+      "email": "UserTest@gmail.com",
+      "first_name": "Test",
+      "last_name": "User",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "date_joined": "2023-03-08T14:17:04Z",
+      "address": "7123 Main St, Anytown USA 12345",
+      "phone_number": "+38099206376",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 1,
+    "fields": {
+      "comment": "The pizza was hot, fresh and delicious, and the delivery was fast and friendly. Great job!",
+      "created_time": "2023-02-05T14:41:29Z",
+      "customer": 4
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 2,
+    "fields": {
+      "comment": "The best pizza in this planet!",
+      "created_time": "2023-02-01T14:40:58Z",
+      "customer": 2
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 3,
+    "fields": {
+      "comment": "I was impressed by the quality of the ingredients and the prompt delivery. Keep up the good work!",
+      "created_time": "2023-02-01T12:40:58Z",
+      "customer": 5
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 4,
+    "fields": {
+      "comment": "I was pleasantly surprised by how quickly the delivery arrived and how delicious the pizza tasted. Excellent!",
+      "created_time": "2023-02-01T15:40:58Z",
+      "customer": 3
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 5,
+    "fields": {
+      "comment": "The toppings were abundant and the crust was crispy, and the delivery was on time. Perfect!",
+      "created_time": "2023-02-01T18:40:58Z",
+      "customer": 6
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 6,
+    "fields": {
+      "comment": "I was so happy with the pizza and the delivery, I will definitely be ordering again. Thanks!",
+      "created_time": "2023-02-01T18:40:58Z",
+      "customer": 4
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 7,
+    "fields": {
+      "comment": "The delivery was quick and the pizza was hot, fresh and incredibly tasty. Great job!",
+      "created_time": "2023-02-01T11:40:58Z",
+      "customer": 2
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 8,
+    "fields": {
+      "comment": "The pizza was exactly as I ordered it and the delivery was prompt and polite. Thank you!",
+      "created_time": "2023-02-01T17:40:58Z",
+      "customer": 5
+    }
+  },
+  {
+    "model": "delivery.feedback",
+    "pk": 9,
+    "fields": {
+      "comment": "I had a wonderful experience with your delivery service and the pizza was amazing. I will definitely be a repeat customer!",
+      "created_time": "2023-02-01T13:50:58Z",
+      "customer": 6
+    }
+  }
+]

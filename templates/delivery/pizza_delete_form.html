@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div style="margin-top: 120px; margin-bottom: 200px; text-align: center">
+    <h1>Are you want to delete pizza?</h1>
+    <form action="" method="post">
+      {% csrf_token %}
+      <br>
+      <input type="submit" value="Yes" class="btn btn-outline-success">
+    </form>
+    <form action="{% url 'delivery:pizza-menu-list' %}" method="GET">
+      <input type="submit" value="Cancel" class="btn btn-danger">
+    </form>
+  </div>
+{% endblock %}

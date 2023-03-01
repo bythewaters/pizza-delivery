@@ -39,7 +39,7 @@
             {% for pizza in pizza_menu %}
               {% if pizza.is_custom_pizza == False %}
                 <div class="col-lg-4 menu-item">
-                  <img src="{% static '/assets/img/pizzas/'|add:pizza.name|add:'.png' %}" class="menu-img img-fluid" alt="">
+                  <img src="{% static 'assets/img/pizzas/'|add:pizza.name|add:'.png' %}" class="menu-img img-fluid" alt="">
                   <h4 style="text-align: center">{{ pizza.name }}
                     {% if perms.delivery.change_pizza %}
                       <a style="text-decoration: none" href="{% url 'delivery:pizza-update' pk=pizza.id %}">🔄</a>

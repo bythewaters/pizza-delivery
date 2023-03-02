@@ -19,7 +19,8 @@ We appreciate your feedback and suggestions. Please leave your comments and help
 Thank you for choosing our pizza delivery service. We hope you enjoy your pizza!
 
 ### Installation
-
+Create .env file and populate it with necessary env variables which are listed in .env.sample
+And then run following commands:
 ```shell
 git clone https://github.com/bythewaters/pizza-delivery.git
 cd delivery_pizza

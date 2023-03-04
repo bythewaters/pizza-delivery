@@ -207,8 +207,8 @@ class TotalPriceMixin:
                 if pizza.topping.all():
                     for topping in pizza.topping.all():
                         pizza.price_with_toppings += topping.price
-                        total_price += topping.price
                         topping_total_price += topping.price
+                        total_price += topping_total_price
                         pizza.save()
         return total_price, topping_total_price
 

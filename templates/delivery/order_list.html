@@ -27,7 +27,7 @@
                               <p>
                                 <span class="text-muted">Toppings: </span>
                                 {% for topping in pizza.topping.all %}
-                                    {{ topping.name }}: {{ topping.price }} $
+                                    <p style="color: red">{{ topping.name }}: {{ topping.price }} $</p>
                                 {% endfor %}
                               </p>
                             {% endif %}

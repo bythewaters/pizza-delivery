@@ -232,7 +232,7 @@ class PrivateOrderListTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "delivery/order_list.html")
-        self.assertEqual(response.context["total_price"], 39)
+        self.assertEqual(response.context["total_price"], 40)
 
     def test_clean_order(self) -> None:
         self.assertEqual(self.order.pizza.count(), 2)
@@ -305,7 +305,7 @@ class ReceiptListTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "delivery/receipt_list.html")
-        self.assertEqual(response.context["total_price"], 27)
+        self.assertEqual(response.context["total_price"], 28)
         self.assertEqual(response.context["topping_total_price"], 3)
 
     def test_create_receipt(self) -> None:

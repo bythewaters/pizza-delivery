@@ -2,7 +2,12 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
-from delivery.models import Customer, FeedBack, Topping, Pizza
+from delivery.models import (
+    Customer,
+    FeedBack,
+    Topping,
+    Pizza
+)
 
 
 class CustomerInfoUpdateForm(forms.ModelForm):
